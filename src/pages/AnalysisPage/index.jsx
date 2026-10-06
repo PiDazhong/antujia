@@ -45,7 +45,7 @@ const RANGE_LABELS = {
 const formatDateStr = (d) => d.format('YYYY-MM-DD');
 
 const fetchLogData = async (startDate, endDate, action) => {
-  const res = await fetch(`${API_BASE_URL}/saudi-server/log/query`, {
+  const res = await fetch(`${API_BASE_URL}/antujia-server/log/query`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ startDate, endDate, action }),

@@ -7,7 +7,7 @@ import Footer from './components/Footer';
 import CookieBanner from './components/CookieBanner';
 import LetsChat from './components/LetsChat';
 import HomePage from './pages/HomePage';
-import UploadGuard from './pages/UploadGuard';
+import AuthGuard from './pages/AuthGuard';
 import AnalysisGuard from './pages/AnalysisGuard';
 import AnalysisPage from './pages/AnalysisPage';
 import PrivacyPage from './pages/PrivacyPage';
@@ -25,7 +25,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const excluded = ['/upload', '/analysis'];
+    const excluded = ['/manage', '/analysis'];
     if (!excluded.includes(location.pathname)) {
       writeLog('view');
     }
@@ -59,7 +59,7 @@ function App() {
             </div>
           }
         />
-        <Route path="/upload" element={<ConfigProvider direction="ltr"><UploadGuard /></ConfigProvider>} />
+        <Route path="/manage" element={<ConfigProvider direction="ltr"><AuthGuard /></ConfigProvider>} />
         <Route path="/analysis" element={<ConfigProvider direction="ltr"><AnalysisGuard /></ConfigProvider>} />
         <Route path="/privacy" element={<div className="app"><Header /><main><PrivacyPage /></main><Footer /></div>} />
       </Routes>

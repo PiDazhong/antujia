@@ -11,7 +11,7 @@ export const LanguageProvider = ({ children }) => {
   const location = useLocation();
 
   useEffect(() => {
-    const excluded = ['/upload', '/analysis'];
+    const excluded = ['/manage', '/analysis'];
     if (excluded.includes(location.pathname)) {
       document.documentElement.dir = 'ltr';
     } else {

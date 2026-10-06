@@ -15,7 +15,7 @@ const Part8Cases = () => {
       const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.list()}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path: '/icons/eg' }),
+        body: JSON.stringify({ moduleName: 'eg' }),
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {

@@ -15,7 +15,7 @@ const Footer = () => {
   const [contactMap, setContactMap] = useState({});
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/saudi-server/codeTable/query`, {
+    fetch(`${API_BASE_URL}/antujia-server/codeTable/query`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ codes: ['tel', 'mail'] }),

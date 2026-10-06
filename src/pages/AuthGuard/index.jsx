@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Input, Button, message } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
-import UploadPage from '../UploadPage';
+import AdminPage from '../AdminPage';
 import { API_BASE_URL, API_ENDPOINTS } from '../../config/uploadModules';
 import './index.less';
 
 const AUTH_KEY = 'upload_auth';
 
-const UploadGuard = () => {
+const AuthGuard = () => {
   const [authenticated, setAuthenticated] = useState(() => {
     return sessionStorage.getItem(AUTH_KEY) === 'true';
   });
@@ -50,11 +50,11 @@ const UploadGuard = () => {
   };
 
   if (authenticated) {
-    return <UploadPage />;
+    return <AdminPage />;
   }
 
   return (
-    <div className="upload-guard">
+    <div className="auth-guard">
       <div className="guard-overlay">
         <div className="guard-card">
           <div className="guard-icon">
@@ -87,4 +87,4 @@ const UploadGuard = () => {
   );
 };
 
-export default UploadGuard;
+export default AuthGuard;

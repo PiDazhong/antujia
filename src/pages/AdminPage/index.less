@@ -1,0 +1,818 @@
+.admin-page {
+  min-height: 80vh;
+  padding: 0 0 24px;
+  background-color: #f8f9fa;
+
+  // 文件管理：左侧模块导航轨（自定义 div + dnd-kit 拖拽排序）
+  .module-layout {
+    display: flex;
+    align-items: stretch;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .module-rail {
+    width: 200px;
+    flex: none;
+    background: #fafbfc;
+    border-right: 1px solid #f0f2f4;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  // 模块列表单独滚动，「新增模块」按钮由 .module-rail 固定在底部常驻
+  .module-rail-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 12px 0;
+  }
+
+  .module-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 2px 12px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #5b6470;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s, background 0.2s, opacity 0.2s;
+
+    &:hover {
+      color: #2e9bd5;
+      background: rgba(46, 155, 213, 0.06);
+
+      .module-item-drag,
+      .module-item-delete {
+        opacity: 1;
+      }
+    }
+
+    &.active {
+      background: rgba(46, 155, 213, 0.1);
+      color: #2e9bd5;
+
+      .module-item-drag,
+      .module-item-delete {
+        opacity: 1;
+      }
+
+      .module-item-name {
+        font-weight: 600;
+      }
+    }
+
+    &.row-hidden {
+      opacity: 0.35;
+    }
+
+    .module-item-drag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      flex: none;
+      color: #b6bcc6;
+      cursor: grab;
+      opacity: 0.45;
+      transition: color 0.2s, opacity 0.2s;
+
+      &:active {
+        cursor: grabbing;
+      }
+    }
+
+    .module-item-name {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .module-item-delete {
+      flex: none;
+      color: rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transition: color 0.2s, opacity 0.2s;
+
+      &:hover {
+        color: #ff4d4f;
+      }
+    }
+  }
+
+  // DragOverlay 悬浮层：被拖起的导航项
+  .module-item-overlay {
+    margin: 0;
+    background: #ffffff;
+    border: 1px solid rgba(46, 155, 213, 0.5);
+    box-shadow: 0 8px 20px rgba(30, 90, 120, 0.16);
+    cursor: grabbing;
+    transform: scale(1.02);
+
+    .module-item-drag,
+    .module-item-delete {
+      opacity: 1;
+    }
+  }
+
+  .module-add-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: none;
+    width: calc(100% - 24px);
+    margin: 8px 12px 12px;
+    padding: 9px 14px;
+    border: 1px dashed #d4d9e0;
+    border-radius: 8px;
+    background: transparent;
+    color: #8a8f99;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+
+    &:hover {
+      color: #2e9bd5;
+      border-color: #2e9bd5;
+      background: rgba(46, 155, 213, 0.04);
+    }
+  }
+
+  .module-content {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 20px 24px 24px;
+  }
+
+  .module-sorting-mask {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    z-index: 10;
+    padding: 2px 10px;
+    border-radius: 10px;
+    background: rgba(46, 155, 213, 0.1);
+    color: #2e9bd5;
+    font-size: 12px;
+  }
+
+  // 页面级大 Tabs：吸顶 + 内容铺满剩余屏幕（固定总高度，内部卡片固定 100vh - tab - 间隔）
+  .admin-tabs {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--admin-tabs-top, 0px) - 24px);
+
+    > .ant-tabs-nav {
+      position: sticky;
+      top: var(--admin-tabs-top, 0);
+      z-index: 100;
+      flex: none;
+      margin-bottom: 0;
+      padding: 0 24px;
+      background: #ffffff;
+      border-bottom: 1px solid #eceff1;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+
+      &::before {
+        border-bottom: none;
+      }
+
+      .ant-tabs-tab {
+        padding: 16px 4px;
+        font-size: 16px;
+
+        + .ant-tabs-tab {
+          margin-left: 32px;
+        }
+
+        &:hover {
+          color: #2e9bd5;
+        }
+
+        &.ant-tabs-tab-active .ant-tabs-tab-btn {
+          color: #2e9bd5;
+          font-weight: 600;
+          text-shadow: none;
+        }
+      }
+
+      .ant-tabs-ink-bar {
+        background: #2e9bd5;
+        height: 3px;
+        border-radius: 3px 3px 0 0;
+      }
+    }
+
+    > .ant-tabs-content-holder {
+      flex: 1;
+      min-height: 0;
+      padding: 24px;
+
+      > .ant-tabs-content {
+        height: 100%;
+
+        > .ant-tabs-tabpane {
+          height: 100%;
+        }
+      }
+    }
+  }
+
+  // 管理面板公共样式：白底圆角卡片，固定撑满 tab 内容区，内部滚动
+  .manager-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #ffffff;
+    border: 1px solid #eceff1;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+
+    // Spin 包裹层占满剩余高度，保证内部滚动区域正确计算
+    // antd v6 有 children 时渲染 .ant-spin > .ant-spin-container（旧版为 .ant-spin-nested-loading），两种都覆盖
+    > .ant-spin-nested-loading,
+    > .ant-spin,
+    > .ant-spin-nested-loading > .ant-spin-container,
+    > .ant-spin > .ant-spin-container {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+    }
+  }
+
+  // 码表管理面板：顶部工具栏（紧凑布局）
+  .code-table-panel {
+    .code-table-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex: none;
+      padding: 10px 24px;
+      border-bottom: 1px solid #f0f2f4;
+
+      .toolbar-title {
+        display: flex;
+        align-items: center;
+
+        p {
+          margin: 0;
+          font-size: 13px;
+          color: #8a8f99;
+        }
+      }
+
+      .toolbar-actions {
+        display: flex;
+        gap: 12px;
+        flex: none;
+      }
+    }
+  }
+
+  .code-table-manager {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    padding: 20px 24px 24px;
+
+    .code-table-body {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .code-table-header,
+    .code-table-row {
+      display: grid;
+      grid-template-columns: 36px 48px 160px minmax(0, 1fr) minmax(0, 1fr) 64px;
+      gap: 16px;
+      align-items: center;
+    }
+
+    // 输入框允许收缩到容器宽度以内，避免撑出横向滚动
+    .ant-input {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .drag-col {
+      display: flex;
+      justify-content: center;
+    }
+
+    .drag-handle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      cursor: grab;
+      color: #b6bcc6;
+      font-size: 15px;
+      user-select: none;
+      transition: all 0.2s;
+
+      &:hover {
+        color: #2e9bd5;
+        background: rgba(46, 155, 213, 0.08);
+      }
+
+      &:active {
+        cursor: grabbing;
+      }
+
+      &.disabled {
+        cursor: not-allowed;
+        opacity: 0.35;
+        background: transparent;
+      }
+    }
+
+    .sort-col {
+      text-align: center;
+    }
+
+    .sort-text {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 6px;
+      border-radius: 11px;
+      background: #f2f4f7;
+      color: #6b7280;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .code-table-header {
+      padding: 10px 16px;
+      margin-bottom: 12px;
+      background: #f7f8fa;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: #8a8f99;
+    }
+
+    .code-table-row {
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      background: #ffffff;
+      border: 1px solid #eceff1;
+      border-radius: 10px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+
+      &:hover {
+        border-color: rgba(46, 155, 213, 0.45);
+        box-shadow: 0 2px 8px rgba(46, 155, 213, 0.08);
+      }
+
+      &.row-hidden {
+        opacity: 0.35;
+        background: #f7f8fa;
+      }
+
+      &.draft-row {
+        cursor: default;
+        background: #fffdf5;
+        border-color: #ffe1a8;
+
+        &:hover {
+          border-color: #ffc85c;
+          box-shadow: 0 2px 8px rgba(250, 173, 20, 0.1);
+        }
+
+        .sort-text {
+          background: #fff3d6;
+          color: #d48806;
+        }
+      }
+
+      .ant-input-filled {
+        background: #f7f8fa;
+
+        &:hover {
+          background: #f0f2f5;
+        }
+      }
+    }
+
+    // DragOverlay 悬浮层：整行被拖起的效果
+    .overlay-row {
+      display: grid;
+      grid-template-columns: 36px 48px 160px minmax(0, 1fr) minmax(0, 1fr) 64px;
+      gap: 16px;
+      align-items: center;
+      padding: 12px 16px;
+      background: #fff;
+      border: 1px solid rgba(46, 155, 213, 0.5);
+      border-radius: 10px;
+      cursor: grabbing;
+      box-shadow: 0 12px 28px rgba(30, 90, 120, 0.16);
+      transform: scale(1.01);
+    }
+
+    .code-table-empty {
+      margin-top: 8px;
+      padding: 48px 24px;
+      text-align: center;
+      color: #9aa0aa;
+      font-size: 14px;
+      border: 1px dashed #dde1e6;
+      border-radius: 10px;
+      background: #fbfcfd;
+    }
+  }
+}
+
+.module-upload-manager {
+  .image-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+
+  .image-card {
+    position: relative;
+    border: 1px solid #e3e6ea;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    transition: box-shadow 0.2s, border-color 0.2s;
+
+    &:hover {
+      border-color: rgba(46, 155, 213, 0.45);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    &.row-hidden {
+      opacity: 0.35;
+    }
+
+    // 拖拽句柄：图片左上角，与右上角操作按钮同风格
+    .image-card-handle {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      z-index: 3;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.45);
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 14px;
+      cursor: grab;
+      transition: background 0.2s, transform 0.2s;
+      user-select: none;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.65);
+        transform: scale(1.1);
+      }
+
+      &:active {
+        cursor: grabbing;
+      }
+    }
+
+    .image-card-img {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #f5f6f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: zoom-in;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+
+    // 操作区：图片右上角常驻展示
+    .image-card-actions {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: flex;
+      gap: 6px;
+      z-index: 2;
+    }
+
+    .image-card-action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.45);
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.95);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, transform 0.2s;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.65);
+        color: #ffffff;
+        transform: scale(1.1);
+      }
+
+      &.danger:hover {
+        background: rgba(255, 77, 79, 0.85);
+      }
+    }
+
+    .image-card-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 10px 12px;
+      min-height: 54px;
+
+      .image-card-desc {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1d1d1d;
+        line-height: 1.4;
+      }
+
+      .image-card-subdesc {
+        font-size: 12px;
+        font-weight: 400;
+        color: #8a8f99;
+        line-height: 1.4;
+        min-height: 16px; // 无附属描述时占位
+      }
+    }
+  }
+
+  // 末尾的上传占位格子：与真实图片格子同尺寸，虚线框
+  .image-card-add {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 146px; // 约等于 图片区(16:9，最小约90px) + 信息区54px + 边框
+    border: 1px dashed #c9cfd8;
+    border-radius: 10px;
+    background: #fbfcfd;
+    color: #8a8f99;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+
+    &:hover {
+      color: #2e9bd5;
+      border-color: #2e9bd5;
+      background: rgba(46, 155, 213, 0.04);
+    }
+
+    .image-card-add-icon {
+      font-size: 24px;
+    }
+
+    .image-card-add-text {
+      font-size: 13px;
+    }
+  }
+
+  // DragOverlay 悬浮层：被拖起的卡片
+  .image-card-overlay {
+    margin: 0;
+    background: #ffffff;
+    border: 1px solid rgba(46, 155, 213, 0.5);
+    box-shadow: 0 12px 28px rgba(30, 90, 120, 0.16);
+    cursor: grabbing;
+    transform: scale(1.02);
+
+    .image-card-handle {
+      opacity: 1;
+    }
+  }
+}
+
+// 上传/编辑弹窗内容：Modal 渲染在 body 下的 portal 中，不能依赖 .module-upload-manager 作用域
+.image-manage-modal {
+  // 多语言输入组：同一 label 下的中/英/阿三行输入
+  .lang-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  // 输入框语言标识
+  .lang-tag {
+    flex: none;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: #f2f4f7;
+    color: #6b7280;
+    font-size: 12px;
+    line-height: 18px;
+    user-select: none;
+  }
+
+  // 编辑弹窗中的图片预览（图片不可替换，仅展示）：固定 240×135（16:9）
+  .edit-image-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 240px;
+    height: 135px;
+    flex: none;
+    border: 1px solid #eceff1;
+    border-radius: 8px;
+    background: #f7f8fa;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  // 新增弹窗中 Upload 选择框及已选缩略图：固定 240×135（16:9），覆盖 antd 默认内联尺寸
+  .ant-upload-wrapper {
+    .ant-upload-select.image-upload-select,
+    .ant-upload-list-item-container {
+      width: 240px !important;
+      height: 135px !important;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-page {
+    padding: 0 0 40px;
+    overflow-x: hidden;
+
+    .section-title {
+      font-size: 24px;
+    }
+
+    // 小屏取消固定高度，卡片随内容撑开，页面整体滚动
+    .admin-tabs {
+      height: auto;
+
+      > .ant-tabs-nav {
+        padding: 0 16px;
+
+        .ant-tabs-tab {
+          padding: 10px 4px;
+          font-size: 15px;
+
+          + .ant-tabs-tab {
+            margin-left: 24px;
+          }
+        }
+      }
+
+      > .ant-tabs-content-holder {
+        padding: 16px;
+      }
+    }
+
+    .manager-panel {
+      height: auto;
+    }
+
+    .code-table-manager {
+      .code-table-body {
+        overflow-y: visible;
+      }
+    }
+
+    .code-table-panel {
+      .code-table-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+
+        .toolbar-actions {
+          justify-content: flex-end;
+        }
+      }
+    }
+
+    // 小屏：左侧导航轨改为顶部横向滚动条
+    .module-layout {
+      flex-direction: column;
+    }
+
+    .module-rail {
+      width: 100%;
+      flex-direction: row;
+      align-items: center;
+      padding: 8px 12px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      border-right: none;
+      border-bottom: 1px solid #f0f2f4;
+
+      .module-rail-list {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex: none;
+        min-height: 0;
+        overflow: visible;
+        padding: 0;
+      }
+
+      .module-item {
+        flex: none;
+        margin: 0 4px;
+      }
+
+      .module-add-btn {
+        flex: none;
+        width: auto;
+        margin: 0 4px;
+      }
+    }
+
+    .module-content {
+      min-height: 0;
+      padding: 16px;
+    }
+
+    .code-table-manager {
+      padding: 16px;
+
+      .code-table-header {
+        display: none;
+      }
+
+      .code-table-row {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px;
+        margin-bottom: 12px;
+
+        .code-table-col {
+          width: 100%;
+
+          &.drag-col {
+            display: none;
+          }
+
+          &::before {
+            display: block;
+            font-size: 12px;
+            color: #8a8f99;
+            margin-bottom: 4px;
+          }
+
+          &.sort-col {
+            text-align: left;
+
+            &::before {
+              content: '序号';
+            }
+          }
+
+          &.code-col::before {
+            content: 'Code（必填）';
+          }
+
+          &.value-col::before {
+            content: 'Value';
+          }
+
+          &.desc-col::before {
+            content: 'Desc';
+          }
+        }
+      }
+    }
+  }
+}

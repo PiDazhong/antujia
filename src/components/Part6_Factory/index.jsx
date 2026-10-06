@@ -15,7 +15,7 @@ const Part6Factory = () => {
       const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.list()}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path: '/icons/factory' }),
+        body: JSON.stringify({ moduleName: 'factory' }),
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {

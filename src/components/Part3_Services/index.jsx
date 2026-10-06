@@ -14,7 +14,7 @@ const Part3Services = () => {
       const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.list()}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path: '/icons/services' }),
+        body: JSON.stringify({ moduleName: 'services' }),
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {
