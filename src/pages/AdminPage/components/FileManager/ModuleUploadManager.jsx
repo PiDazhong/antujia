@@ -9,11 +9,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import {
-  SortableContext,
-  rectSortingStrategy,
-  arrayMove,
-} from '@dnd-kit/sortable';
+import { SortableContext, rectSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import SortableImageCard from './SortableImageCard';
 import CardContent from './CardContent';
 import { EMPTY_LANG, normalizeLang } from './utils';

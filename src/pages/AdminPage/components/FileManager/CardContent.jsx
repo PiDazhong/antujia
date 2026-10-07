@@ -10,12 +10,15 @@ const CardContent = ({ item, imageUrl, onPreview, onEdit, onDelete, handleListen
       <HolderOutlined />
     </span>
     <div className="image-card-img" onClick={() => onPreview(item)}>
-      <img src={imageUrl} alt={item.fileName || ''} onError={(e) => { e.target.style.display = 'none'; }} />
+      <img
+        src={imageUrl}
+        alt={item.fileName || ''}
+        onError={(e) => {
+          e.target.style.display = 'none';
+        }}
+      />
       <div className="image-card-actions" onClick={(e) => e.stopPropagation()}>
-        <EditOutlined
-          className="image-card-action-btn"
-          onClick={() => onEdit(item)}
-        />
+        <EditOutlined className="image-card-action-btn" onClick={() => onEdit(item)} />
         <Popconfirm
           title="确认删除"
           description="确定要删除该图片条目吗？"
