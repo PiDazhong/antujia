@@ -56,6 +56,10 @@ const PasswordManager = ({ active }) => {
   // 删除：已保存的行调用 /delete（最后一条服务端会拒绝），未保存的草稿行直接移除
   const handleDelete = async (index) => {
     const item = list[index];
+    if (list.length <= 1) {
+      message.warning('至少保留一条登录密码，不允许删除');
+      return;
+    }
     if (!item.isNew && item.password) {
       try {
         const res = await authFetch(`${API_BASE_URL}${API_ENDPOINTS.passwordDelete()}`, {
@@ -175,6 +179,7 @@ const PasswordManager = ({ active }) => {
                   <Button
                     type="link"
                     danger
+                    disabled={list.length <= 1}
                     onClick={() => handleDelete(index)}
                     icon={<DeleteOutlined />}
                   >

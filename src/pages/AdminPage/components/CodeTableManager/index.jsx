@@ -18,6 +18,7 @@ import {
 import RowContent from './RowContent';
 import SortableRow from './SortableRow';
 import { CODE_TABLE_BASE, PROTECTED_CODES } from './constants';
+import { API_BASE_URL, API_ENDPOINTS } from '../../../../config/uploadModules';
 import { authFetch } from '../../../../utils/authFetch';
 
 // 信息管理：维护码表（codeTable）数据，支持行拖拽排序
@@ -57,10 +58,21 @@ const CodeTableManager = ({ active }) => {
     }
   }, []);
 
-  // 首次挂载及 tab 每次变为可见时重新拉取，保证看到的是最新数据
+  // 校验 token 探登录态：401 时 authFetch 自动清 token 并刷新回到登录守卫，其余错误静默
+  const verifyToken = useCallback(async () => {
+    try {
+      await authFetch(`${API_BASE_URL}${API_ENDPOINTS.verify}`, { method: 'POST' });
+    } catch {
+      /* 网络错误无需处理 */
+    }
+  }, []);
+
+  // 首次挂载及 tab 每次变为可见时探登录态并重新拉取，保证看到的是最新数据
   useEffect(() => {
-    if (active) fetchList();
-  }, [active, fetchList]);
+    if (!active) return;
+    verifyToken();
+    fetchList();
+  }, [active, verifyToken, fetchList]);
 
   const handleAdd = () => {
     setList((prev) => [
