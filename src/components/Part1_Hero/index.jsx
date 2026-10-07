@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import { useTranslation } from '../../hooks/useTranslation';
-import { API_BASE_URL, API_ENDPOINTS } from '../../config/uploadModules';
+import { API_BASE_URL, API_ENDPOINTS, FILE_BASE_URL } from '../../config/uploadModules';
 import './index.less';
 
 const Part1Hero = () => {
@@ -38,7 +38,7 @@ const Part1Hero = () => {
   }, [fetchImages]);
 
   const getFileUrl = (filename) => {
-    return `${API_BASE_URL}/icons/home/${filename}`;
+    return `${FILE_BASE_URL}/home/${filename}`;
   };
 
   const handleScrollToForm = () => {

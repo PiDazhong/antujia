@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '../../hooks/useTranslation';
-import { API_BASE_URL, API_ENDPOINTS } from '../../config/uploadModules';
+import { API_BASE_URL, API_ENDPOINTS, FILE_BASE_URL } from '../../config/uploadModules';
 import './index.less';
 
 const Part4Products = () => {
@@ -46,7 +46,7 @@ const Part4Products = () => {
   }, [fetchImages]);
 
   const getFileUrl = (filename) => {
-    return `${API_BASE_URL}/icons/products/${filename}`;
+    return `${FILE_BASE_URL}/products/${filename}`;
   };
 
   const extractDisplayName = (item) => {

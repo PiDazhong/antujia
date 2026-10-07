@@ -144,10 +144,10 @@ const uploadAndExtract = (
 };
 
 // 配置参数
-const buildDir = path.join(__dirname, 'saudi');
-const outputPath = path.join(__dirname, 'saudi.zip');
-const remoteZipPath = '/etc/nginx/html/saudi.zip';
-const remoteDirPath = '/etc/nginx/html/saudi';
+const buildDir = path.join(__dirname, 'damonshome');
+const outputPath = path.join(__dirname, 'damonshome.zip');
+const remoteZipPath = '/etc/nginx/html/damonshome.zip';
+const remoteDirPath = '/etc/nginx/html/damonshome';
 
 const sshConfig = {
   host: '47.237.213.46',

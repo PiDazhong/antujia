@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useCallback } from 'react';
-import { Button, Input, message, Spin } from 'antd';
-import { DeleteOutlined, HolderOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, message, Spin } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import {
   DndContext,
   DragOverlay,
@@ -13,87 +13,14 @@ import {
 import {
   SortableContext,
   verticalListSortingStrategy,
-  useSortable,
   arrayMove,
 } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { API_BASE_URL } from '../../../config/uploadModules';
-
-const CODE_TABLE_BASE = `${API_BASE_URL}/antujia-server/codeTable`;
-
-// 行内容（拖拽悬浮层也复用这份渲染）
-const RowContent = ({ item, index, onChange, onDelete, handleListeners }) => (
-  <>
-    <div className="code-table-col drag-col">
-      <span
-        className={`drag-handle${item.isNew ? ' disabled' : ''}`}
-        title={item.isNew ? '保存后可拖拽排序' : '拖拽排序'}
-        {...handleListeners}
-      >
-        <HolderOutlined />
-      </span>
-    </div>
-    <div className="code-table-col sort-col">
-      <span className="sort-text">{index + 1}</span>
-    </div>
-    <div className="code-table-col code-col">
-      <Input
-        variant="filled"
-        placeholder="请输入 Code"
-        value={item.code}
-        onChange={(e) => onChange(index, 'code', e.target.value)}
-      />
-    </div>
-    <div className="code-table-col value-col">
-      <Input
-        variant="filled"
-        placeholder="请输入 Value"
-        value={item.value ?? ''}
-        onChange={(e) => onChange(index, 'value', e.target.value)}
-      />
-    </div>
-    <div className="code-table-col desc-col">
-      <Input
-        variant="filled"
-        placeholder="请输入 Desc"
-        value={item.desc}
-        onChange={(e) => onChange(index, 'desc', e.target.value)}
-      />
-    </div>
-    <div className="code-table-col action-col">
-      <Button
-        type="link"
-        danger
-        onClick={() => onDelete(index)}
-        icon={<DeleteOutlined />}
-      >
-        删除
-      </Button>
-    </div>
-  </>
-);
-
-// 可排序行：整行响应拖拽，其他行由 SortableContext 平滑让位
-const SortableRow = ({ item, index, onChange, onDelete }) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: item.key,
-    disabled: item.isNew,
-  });
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`code-table-row${item.isNew ? ' draft-row' : ''}${isDragging ? ' row-hidden' : ''}`}
-      {...attributes}
-    >
-      <RowContent item={item} index={index} onChange={onChange} onDelete={onDelete} handleListeners={listeners} />
-    </div>
-  );
-};
+import RowContent from './RowContent';
+import SortableRow from './SortableRow';
+import { CODE_TABLE_BASE, PROTECTED_CODES } from './constants';
 
 // 信息管理：维护码表（codeTable）数据，支持行拖拽排序
-const CodeTableManager = () => {
+const CodeTableManager = ({ active }) => {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -130,9 +57,10 @@ const CodeTableManager = () => {
     }
   }, []);
 
+  // 首次挂载及 tab 每次变为可见时重新拉取，保证看到的是最新数据
   useEffect(() => {
-    fetchList();
-  }, [fetchList]);
+    if (active) fetchList();
+  }, [active, fetchList]);
 
   const handleAdd = () => {
     setList((prev) => [
@@ -152,6 +80,8 @@ const CodeTableManager = () => {
   // 删除：已保存的行调用 /delete（服务端会重算剩余 sort），未保存的草稿行直接移除
   const handleDelete = async (index) => {
     const item = list[index];
+    // 兜底：系统内置 Code 不允许删除（正常入口已隐藏删除按钮）
+    if (PROTECTED_CODES.includes(item.code)) return;
     if (!item.isNew && item.code && item.code.trim()) {
       try {
         const res = await fetch(`${CODE_TABLE_BASE}/delete`, {

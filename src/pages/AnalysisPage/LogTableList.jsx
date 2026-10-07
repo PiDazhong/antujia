@@ -31,7 +31,7 @@ const LogTableList = ({ dataList = [], onRefresh }) => {
 
   // 查询 black_ips 码表
   useEffect(() => {
-    fetch(`${API_BASE_URL}/antujia-server/codeTable/query`, {
+    fetch(`${API_BASE_URL}/damonshome-server/codeTable/query`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ codes: ['black_ips'] }),
@@ -62,7 +62,7 @@ const LogTableList = ({ dataList = [], onRefresh }) => {
       setLoadingIp(ip);
       const newBlackIps = [...blackIps, ip];
       try {
-        const res = await fetch(`${API_BASE_URL}/antujia-server/codeTable/save`, {
+        const res = await fetch(`${API_BASE_URL}/damonshome-server/codeTable/save`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -97,7 +97,7 @@ const LogTableList = ({ dataList = [], onRefresh }) => {
       setLoadingIp(ip);
       const newBlackIps = blackIps.filter((b) => b !== ip);
       try {
-        const res = await fetch(`${API_BASE_URL}/antujia-server/codeTable/save`, {
+        const res = await fetch(`${API_BASE_URL}/damonshome-server/codeTable/save`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -129,7 +129,7 @@ const LogTableList = ({ dataList = [], onRefresh }) => {
     async (timestamp) => {
       setDeletingTimestamp(timestamp);
       try {
-        const res = await fetch(`${API_BASE_URL}/antujia-server/log/delete`, {
+        const res = await fetch(`${API_BASE_URL}/damonshome-server/log/delete`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ timestamp }),

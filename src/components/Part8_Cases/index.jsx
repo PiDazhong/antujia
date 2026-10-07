@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Autoplay, Pagination } from 'swiper/modules';
 import { useTranslation } from '../../hooks/useTranslation';
-import { API_BASE_URL, API_ENDPOINTS } from '../../config/uploadModules';
+import { API_BASE_URL, API_ENDPOINTS, FILE_BASE_URL } from '../../config/uploadModules';
 import 'swiper/swiper-bundle.css';
 import './index.less';
 
@@ -34,7 +34,7 @@ const Part8Cases = () => {
   }, [fetchImages]);
 
   const getFileUrl = (filename) => {
-    return `${API_BASE_URL}/icons/eg/${filename}`;
+    return `${FILE_BASE_URL}/eg/${filename}`;
   };
 
   return (
