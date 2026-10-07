@@ -4,6 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import ModuleItem from '../FileManager/ModuleItem';
 import ModuleTextManager from './ModuleTextManager';
 import { API_BASE_URL, API_ENDPOINTS } from '../../../../config/uploadModules';
+import { authFetch } from '../../../../utils/authFetch';
 
 // 模块名校验：仅允许英文、数字、下划线
 const MODULE_NAME_PATTERN = /^[A-Za-z0-9_]+$/;
@@ -21,9 +22,8 @@ const TextManager = ({ active }) => {
   const fetchModules = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.moduleList()}`, {
+      const res = await authFetch(`${API_BASE_URL}${API_ENDPOINTS.moduleList()}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {
@@ -58,10 +58,9 @@ const TextManager = ({ active }) => {
     }
     setAddLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.moduleCreate()}`, {
+      const res = await authFetch(`${API_BASE_URL}${API_ENDPOINTS.moduleCreate()}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleName: name }),
+        body: { moduleName: name },
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {
@@ -80,10 +79,9 @@ const TextManager = ({ active }) => {
 
   const handleDeleteModule = async (name) => {
     try {
-      const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.moduleDelete()}`, {
+      const res = await authFetch(`${API_BASE_URL}${API_ENDPOINTS.moduleDelete()}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleName: name }),
+        body: { moduleName: name },
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {

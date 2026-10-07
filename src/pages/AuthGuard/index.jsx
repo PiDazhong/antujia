@@ -3,14 +3,11 @@ import { Input, Button, message } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
 import AdminPage from '../AdminPage';
 import { API_BASE_URL, API_ENDPOINTS } from '../../config/uploadModules';
+import { getToken, setToken } from '../../utils/authFetch';
 import './index.less';
 
-const AUTH_KEY = 'upload_auth';
-
 const AuthGuard = () => {
-  const [authenticated, setAuthenticated] = useState(() => {
-    return sessionStorage.getItem(AUTH_KEY) === 'true';
-  });
+  const [authenticated, setAuthenticated] = useState(() => !!getToken());
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -29,8 +26,8 @@ const AuthGuard = () => {
       });
 
       const data = await res.json();
-      if (data && data.success === true && data.code === 1) {
-        sessionStorage.setItem(AUTH_KEY, 'true');
+      if (data && data.success === true && data.code === 1 && data.data?.token) {
+        setToken(data.data.token);
         setAuthenticated(true);
         message.success('验证通过');
       } else {

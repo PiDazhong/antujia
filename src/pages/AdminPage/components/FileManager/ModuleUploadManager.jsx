@@ -14,6 +14,7 @@ import SortableImageCard from './SortableImageCard';
 import CardContent from './CardContent';
 import { EMPTY_LANG, normalizeLang } from './utils';
 import { API_BASE_URL, API_ENDPOINTS, FILE_BASE_URL } from '../../../../config/uploadModules';
+import { authFetch } from '../../../../utils/authFetch';
 
 // 多语言输入组：中文 / 英文 / 阿语三行
 /* eslint-disable react/prop-types */
@@ -56,10 +57,9 @@ const ModuleUploadManager = ({ moduleName, active }) => {
   const fetchItems = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.moduleQuery()}`, {
+      const res = await authFetch(`${API_BASE_URL}${API_ENDPOINTS.moduleQuery()}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleName }),
+        body: { moduleName },
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {
@@ -108,10 +108,9 @@ const ModuleUploadManager = ({ moduleName, active }) => {
 
   const handleDelete = async (item) => {
     try {
-      const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.moduleItemDelete()}`, {
+      const res = await authFetch(`${API_BASE_URL}${API_ENDPOINTS.moduleItemDelete()}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleName, fileId: item.fileId }),
+        body: { moduleName, fileId: item.fileId },
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {
@@ -143,7 +142,7 @@ const ModuleUploadManager = ({ moduleName, active }) => {
       const formData = new FormData();
       formData.append('moduleName', moduleName);
       formData.append('file', file);
-      const uploadRes = await fetch(`${API_BASE_URL}${API_ENDPOINTS.upload()}`, {
+      const uploadRes = await authFetch(`${API_BASE_URL}${API_ENDPOINTS.upload()}`, {
         method: 'POST',
         body: formData,
       });
@@ -159,10 +158,9 @@ const ModuleUploadManager = ({ moduleName, active }) => {
         throw new Error('上传接口返回数据异常');
       }
       // fileUrl 纯存路径（无域名、无 /icons 前缀），展示时由前端拼接
-      const addRes = await fetch(`${API_BASE_URL}${API_ENDPOINTS.moduleAdd()}`, {
+      const addRes = await authFetch(`${API_BASE_URL}${API_ENDPOINTS.moduleAdd()}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: {
           moduleName,
           fileUrl: `/${moduleName}/${filename}`,
           fileName: originalname,
@@ -172,7 +170,7 @@ const ModuleUploadManager = ({ moduleName, active }) => {
             en: fileSubDesc.en.trim(),
             ar: fileSubDesc.ar.trim(),
           },
-        }),
+        },
       });
       const addData = await addRes.json();
       if (!addRes.ok || !addData.success || addData.code !== 1) {
@@ -199,10 +197,9 @@ const ModuleUploadManager = ({ moduleName, active }) => {
 
     setSubmitting(true);
     try {
-      const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.moduleEdit()}`, {
+      const res = await authFetch(`${API_BASE_URL}${API_ENDPOINTS.moduleEdit()}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: {
           moduleName,
           fileId: editingItem.fileId,
           fileDesc: desc,
@@ -211,7 +208,7 @@ const ModuleUploadManager = ({ moduleName, active }) => {
             en: fileSubDesc.en.trim(),
             ar: fileSubDesc.ar.trim(),
           },
-        }),
+        },
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {
@@ -233,13 +230,12 @@ const ModuleUploadManager = ({ moduleName, active }) => {
     setItems(next);
     setSorting(true);
     try {
-      const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.moduleItemSort()}`, {
+      const res = await authFetch(`${API_BASE_URL}${API_ENDPOINTS.moduleItemSort()}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: {
           moduleName,
           fileIds: next.map((item) => item.fileId),
-        }),
+        },
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {

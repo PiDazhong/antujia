@@ -18,6 +18,7 @@ import SortableSharkCard from './SortableSharkCard';
 import SharkCardContent from './SharkCardContent';
 import { EMPTY_LANG, normalizeLang } from '../FileManager/utils';
 import { API_BASE_URL, API_ENDPOINTS } from '../../../../config/uploadModules';
+import { authFetch } from '../../../../utils/authFetch';
 
 // 多语言输入项：中文 / 英文 / 阿语
 const LANG_INPUTS = [
@@ -64,10 +65,9 @@ const ModuleTextManager = ({ moduleName, active }) => {
   const fetchItems = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.sharkQuery()}`, {
+      const res = await authFetch(`${API_BASE_URL}${API_ENDPOINTS.sharkQuery()}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleName }),
+        body: { moduleName },
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {
@@ -115,10 +115,9 @@ const ModuleTextManager = ({ moduleName, active }) => {
 
   const handleDelete = async (item) => {
     try {
-      const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.sharkDelete()}`, {
+      const res = await authFetch(`${API_BASE_URL}${API_ENDPOINTS.sharkDelete()}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ moduleName, sharkKey: item.sharkKey }),
+        body: { moduleName, sharkKey: item.sharkKey },
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {
@@ -140,10 +139,9 @@ const ModuleTextManager = ({ moduleName, active }) => {
     }
     setSubmitting(true);
     try {
-      const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.sharkAdd()}`, {
+      const res = await authFetch(`${API_BASE_URL}${API_ENDPOINTS.sharkAdd()}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: {
           moduleName,
           sharkKey: key,
           sharkText: {
@@ -151,7 +149,7 @@ const ModuleTextManager = ({ moduleName, active }) => {
             en: sharkText.en.trim(),
             ar: sharkText.ar.trim(),
           },
-        }),
+        },
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {
@@ -171,10 +169,9 @@ const ModuleTextManager = ({ moduleName, active }) => {
   const handleEdit = async () => {
     setSubmitting(true);
     try {
-      const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.sharkEdit()}`, {
+      const res = await authFetch(`${API_BASE_URL}${API_ENDPOINTS.sharkEdit()}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: {
           moduleName,
           sharkKey: editingKey,
           sharkText: {
@@ -182,7 +179,7 @@ const ModuleTextManager = ({ moduleName, active }) => {
             en: sharkText.en.trim(),
             ar: sharkText.ar.trim(),
           },
-        }),
+        },
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {
@@ -204,13 +201,12 @@ const ModuleTextManager = ({ moduleName, active }) => {
     setItems(next);
     setSorting(true);
     try {
-      const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.sharkSort()}`, {
+      const res = await authFetch(`${API_BASE_URL}${API_ENDPOINTS.sharkSort()}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: {
           moduleName,
           sharkKeys: next.map((item) => item.sharkKey),
-        }),
+        },
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {

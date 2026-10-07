@@ -18,6 +18,7 @@ import {
 import RowContent from './RowContent';
 import SortableRow from './SortableRow';
 import { CODE_TABLE_BASE, PROTECTED_CODES } from './constants';
+import { authFetch } from '../../../../utils/authFetch';
 
 // 信息管理：维护码表（codeTable）数据，支持行拖拽排序
 const CodeTableManager = ({ active }) => {
@@ -34,10 +35,9 @@ const CodeTableManager = ({ active }) => {
   const fetchList = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${CODE_TABLE_BASE}/query`, {
+      const res = await authFetch(`${CODE_TABLE_BASE}/query`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ codes: [] }),
+        body: { codes: [] },
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {
@@ -84,10 +84,9 @@ const CodeTableManager = ({ active }) => {
     if (PROTECTED_CODES.includes(item.code)) return;
     if (!item.isNew && item.code && item.code.trim()) {
       try {
-        const res = await fetch(`${CODE_TABLE_BASE}/delete`, {
+        const res = await authFetch(`${CODE_TABLE_BASE}/delete`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code: item.code.trim() }),
+          body: { code: item.code.trim() },
         });
         const data = await res.json();
         if (!res.ok || !data.success || data.code !== 1) {
@@ -119,16 +118,15 @@ const CodeTableManager = ({ active }) => {
 
     setSaving(true);
     try {
-      const res = await fetch(`${CODE_TABLE_BASE}/save`, {
+      const res = await authFetch(`${CODE_TABLE_BASE}/save`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: {
           items: list.map((item) => ({
             code: item.code.trim(),
             value: item.value ?? null,
             desc: (item.desc || '').trim(),
           })),
-        }),
+        },
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {
@@ -150,10 +148,9 @@ const CodeTableManager = ({ active }) => {
     setList(next);
     setSorting(true);
     try {
-      const res = await fetch(`${CODE_TABLE_BASE}/sort`, {
+      const res = await authFetch(`${CODE_TABLE_BASE}/sort`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ codes }),
+        body: { codes },
       });
       const data = await res.json();
       if (!res.ok || !data.success || data.code !== 1) {
