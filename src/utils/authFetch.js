@@ -15,7 +15,7 @@ export const clearToken = () => sessionStorage.removeItem(TOKEN_KEY);
 /**
  * 管理端请求封装：自动携带 Bearer token、JSON 序列化 body（FormData 除外）
  * 返回 401 时清除 token 并刷新页面回到登录守卫
- * 注意：登录接口（checkAuth）本身可能返回 401（密码错误），不要用这个封装
+ * 注意：登录接口（login）本身可能返回 401（密码错误），不要用这个封装
  */
 export async function authFetch(url, options = {}) {
   const { body, headers = {}, ...rest } = options;

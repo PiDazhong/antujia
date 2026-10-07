@@ -19,7 +19,7 @@ const AuthGuard = () => {
 
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.checkAuth}`, {
+      const res = await fetch(`${API_BASE_URL}${API_ENDPOINTS.login}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password: password.trim() }),

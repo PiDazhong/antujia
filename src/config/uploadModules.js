@@ -16,8 +16,10 @@ export const FILE_BASE_URL = import.meta.env.DEV
 
 // API 端点配置
 export const API_ENDPOINTS = {
-  // 权限校验：POST { password }
-  checkAuth: '/damonshome-server/checkAuth',
+  // 登录校验：POST { password }，成功返回 data.token
+  login: '/damonshome-server/login',
+  // 校验 token 探登录态（需登录）：POST 无 body
+  verify: '/damonshome-server/verify',
   // 上传文件：POST multipart/form-data（formData 中需包含 moduleName 和 file）
   // 返回 data: { filename: 磁盘uuid文件名, originalname: 原始显示名 }
   upload: () => '/damonshome-server/files/upload',

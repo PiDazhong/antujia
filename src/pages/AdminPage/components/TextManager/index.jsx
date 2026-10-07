@@ -40,10 +40,21 @@ const TextManager = ({ active }) => {
     }
   }, []);
 
-  // 首次挂载及 tab 每次变为可见时重新拉取模块列表
+  // 校验 token 探登录态：401 时 authFetch 自动清 token 并刷新回到登录守卫，其余错误静默
+  const verifyToken = useCallback(async () => {
+    try {
+      await authFetch(`${API_BASE_URL}${API_ENDPOINTS.verify}`, { method: 'POST' });
+    } catch {
+      /* 网络错误无需处理 */
+    }
+  }, []);
+
+  // 首次挂载及 tab 每次变为可见时探登录态并重新拉取模块列表
   useEffect(() => {
-    if (active) fetchModules();
-  }, [active, fetchModules]);
+    if (!active) return;
+    verifyToken();
+    fetchModules();
+  }, [active, verifyToken, fetchModules]);
 
   const openAddModal = () => {
     setAddValue('');
