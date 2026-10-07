@@ -57,4 +57,10 @@ export const API_ENDPOINTS = {
   sharkDelete: () => '/damonshome-server/module/shark/delete',
   // 文本条目排序：POST body { moduleName, sharkKeys: string[] }
   sharkSort: () => '/damonshome-server/module/shark/sort',
+  // 登录密码查询（需登录）：POST 无 body，返回 [{ password, desc }]
+  passwordQuery: () => '/damonshome-server/password/query',
+  // 登录密码批量保存（需登录）：POST body { items: [{ password, desc }] }，整表替换，至少留一条
+  passwordSave: () => '/damonshome-server/password/save',
+  // 登录密码删除（需登录）：POST body { password }，最后一条不允许删除
+  passwordDelete: () => '/damonshome-server/password/delete',
 };

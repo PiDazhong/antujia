@@ -443,6 +443,14 @@
       background: #fbfcfd;
     }
   }
+
+  // 登录管理：复用 code-table 样式，去掉拖拽列，3 列布局
+  .password-manager-panel {
+    .password-table-header,
+    .code-table-row {
+      grid-template-columns: 48px minmax(0, 1fr) minmax(0, 1fr) 64px;
+    }
+  }
 }
 
 .module-upload-manager {
@@ -1027,6 +1035,19 @@
           &.desc-col::before {
             content: 'Desc';
           }
+        }
+      }
+    }
+
+    // 登录管理小屏：密码/说明列补充标签
+    .password-manager-panel {
+      .code-table-row .code-table-col {
+        &:nth-child(2)::before {
+          content: '密码';
+        }
+
+        &:nth-child(3)::before {
+          content: '说明';
         }
       }
     }
