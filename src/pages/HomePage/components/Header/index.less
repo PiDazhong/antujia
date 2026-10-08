@@ -1,0 +1,112 @@
+.home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 56px;
+  padding: 0 32px;
+  background-color: #0a0a0a;
+  color: #ffffff;
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  // 2x2 圆点图标，整体约 22px
+  &__dots {
+    display: grid;
+    grid-template-columns: repeat(2, 9px);
+    grid-template-rows: repeat(2, 9px);
+    gap: 4px;
+
+    i {
+      width: 9px;
+      height: 9px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+    }
+  }
+
+  &__wordmark {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    line-height: 1;
+  }
+
+  &__name {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+
+  &__slogan {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    color: rgba(255, 255, 255, 0.75);
+    white-space: nowrap;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  // 语言切换胶囊：点击循环切换 zh → en → ar
+  &__lang {
+    height: 28px;
+    padding: 0 18px;
+    font-size: 12px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    background: transparent;
+    // 偏方型的圆角 + 上下细、左右微粗的描边
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-top-width: 0.5px;
+    border-bottom-width: 0.5px;
+    border-left-width: 1.5px;
+    border-right-width: 1.5px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.12);
+    }
+  }
+
+  // 汉堡菜单
+  &__menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    width: 22px;
+    height: 30px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
+    span {
+      display: block;
+      width: 100%;
+      height: 1px;
+      border-radius: 2px;
+      background-color: #ffffff;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .home-header {
+    padding: 0 16px;
+  }
+}

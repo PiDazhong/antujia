@@ -1,0 +1,190 @@
+// 背景大图已接入（heroImage 模块 sort=1 的图片条目）
+.hero-image {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 640px;
+  padding: 48px 32px 32px;
+  overflow: hidden;
+  color: #ffffff;
+
+  // 整版背景图：铺满模块，垫在遮罩层下面
+  // 选择器须带父级：下面 > * 会重设直接子元素的 position/z-index，单写 &__bg 优先级不够
+  & > &__bg {
+    position: absolute;
+    top: 0;
+    inset-inline-start: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  // 内容浮在遮罩层之上
+  > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  // 整版渐变遮罩：顶部压暗保证标题/按钮可读，向下渐隐露出图片；
+  // 底部再轻轻压暗一层衬托统计数字。
+  // 层级：背景图 0 → 遮罩 1 → 内容 2；
+  // 注意 ::before 同 z-index 时排在真实子元素（背景图）之前绘制，会被盖住，所以这里必须高一层
+  &::before {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    content: '';
+    // 渐变线角度：0deg=向上、90deg=向右、顺时针增大。
+    // 顶部遮罩由 to bottom(180°) 顺时针转 15° → 195deg；底部遮罩由 to top(0°) 顺时针转 15° → 15deg
+    background:
+      linear-gradient(
+        188deg,
+        rgba(3, 3, 3, 1) 0%,
+        rgba(3, 3, 3, 0.35) 30%,
+        rgba(3, 3, 3, 0) 35%
+      ),
+      linear-gradient(
+        12deg,
+        rgba(3, 3, 3, 0.9) 10%,
+        rgba(3, 3, 3, 0.35) 30%,
+        rgba(3, 3, 3, 0) 45%
+      );
+  }
+
+  &__title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin: -24px 0 48px;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  &__title-line {
+    font-size: 32px;
+    line-height: 1.3;
+    white-space: nowrap;
+
+    &--white {
+      color: #ffffff;
+    }
+
+    &--gold {
+      color: #b89b5e;
+    }
+  }
+
+  // WhatsApp 长条按钮（白色半透明底）
+  &__cta {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    width: min(600px, 100%);
+    height: 36px;
+    padding: 0 20px;
+    margin-bottom: auto;
+    font-size: 14px;
+    font-weight: 500;
+    color: #ffffff;
+    background: rgba(245, 230, 196, 0.35);
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  &__cta-icon {
+    font-size: 18px;
+  }
+
+  // 底部统计：2x2 网格，整行铺满，文本在各自列里靠内对齐
+  // 内部全部用逻辑属性（inline-start / text-align: start）：
+  // ar 时根节点为 rtl，统计块、文本对齐自动镜像到右侧，符合阿语阅读习惯；
+  // 数字（15+、300000+）由双向算法保持 LTR 内部顺序，不受影响
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px 32px;
+    width: 100%;
+    margin-top: 320px;
+  }
+
+  &__stat {
+    position: relative;
+    inset-inline-start: 32%;
+    display: flex;
+    flex-direction: column;
+    justify-self: start;
+    width: max-content;
+    gap: 8px;
+    text-align: start;
+  }
+
+  &__stat-value {
+    display: block;
+    width: 100%;
+    // 数字统一字号，微软雅黑；细字重
+    font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    font-size: 40px;
+    font-weight: 300;
+    line-height: 1;
+    color: #b89b5e;
+    text-align: start;
+    white-space: nowrap;
+  }
+
+  // 数字值中的字母单位（如 2BILLION+ 里的 BILLION）：小号字、与数字底部对齐
+  &__stat-unit {
+    font-size: 22px;
+    font-weight: 300;
+  }
+
+  &__stat-label {
+    display: block;
+    width: 100%;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.85);
+    text-align: start;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-image {
+    padding: 40px 20px 24px;
+
+    &__title-line {
+      font-size: 24px;
+    }
+
+    &__stats {
+      margin-top: 200px;
+      gap: 20px 24px;
+    }
+
+    &__stat {
+      inset-inline-start: 18%;
+    }
+
+    &__stat-value {
+      font-size: 30px;
+    }
+
+    &__stat-unit {
+      font-size: 16px;
+    }
+
+    &__stat-label {
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+  }
+}

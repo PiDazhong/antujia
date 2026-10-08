@@ -1,4 +1,8 @@
 /* Global Styles - aligned with workspace.ae */
+* {
+  font-family: 'Raleway', sans-serif;
+}
+
 html {
   scroll-behavior: smooth;
 }

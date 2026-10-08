@@ -41,23 +41,23 @@ function App() {
         <Route
           path="/"
           element={
-            <>loading</>
-            // <div className="app">
-            //   <Header />
-            //   <main>
-            //     <HomePage />
-            //   </main>
-            //   <Footer />
-            //   <CookieBanner />
-            //   <LetsChat />
-            //   <button
-            //     className="back-to-top"
-            //     onClick={scrollToTop}
-            //     aria-label="Back to top"
-            //   >
-            //     <UpOutlined />
-            //   </button>
-            // </div>
+            <div className="app">
+              <HomePage />
+              {/* <Header />
+              <main>
+                
+              </main>
+              <Footer />
+              <CookieBanner />
+              <LetsChat />
+              <button
+                className="back-to-top"
+                onClick={scrollToTop}
+                aria-label="Back to top"
+              >
+                <UpOutlined />
+              </button> */}
+            </div>
           }
         />
         <Route
