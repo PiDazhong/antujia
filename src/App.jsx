@@ -41,27 +41,53 @@ function App() {
         <Route
           path="/"
           element={
+            <>loading</>
+            // <div className="app">
+            //   <Header />
+            //   <main>
+            //     <HomePage />
+            //   </main>
+            //   <Footer />
+            //   <CookieBanner />
+            //   <LetsChat />
+            //   <button
+            //     className="back-to-top"
+            //     onClick={scrollToTop}
+            //     aria-label="Back to top"
+            //   >
+            //     <UpOutlined />
+            //   </button>
+            // </div>
+          }
+        />
+        <Route
+          path="/manage"
+          element={
+            <ConfigProvider direction="ltr">
+              <AuthGuard />
+            </ConfigProvider>
+          }
+        />
+        <Route
+          path="/analysis"
+          element={
+            <ConfigProvider direction="ltr">
+              <AnalysisGuard />
+            </ConfigProvider>
+          }
+        />
+        <Route
+          path="/privacy"
+          element={
             <div className="app">
               <Header />
               <main>
-                <HomePage />
+                <PrivacyPage />
               </main>
               <Footer />
-              <CookieBanner />
-              <LetsChat />
-              <button
-                className="back-to-top"
-                onClick={scrollToTop}
-                aria-label="Back to top"
-              >
-                <UpOutlined />
-              </button>
             </div>
           }
         />
-        <Route path="/manage" element={<ConfigProvider direction="ltr"><AuthGuard /></ConfigProvider>} />
-        <Route path="/analysis" element={<ConfigProvider direction="ltr"><AnalysisGuard /></ConfigProvider>} />
-        <Route path="/privacy" element={<div className="app"><Header /><main><PrivacyPage /></main><Footer /></div>} />
       </Routes>
     </ConfigProvider>
   );
