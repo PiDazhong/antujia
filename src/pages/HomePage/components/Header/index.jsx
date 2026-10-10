@@ -3,7 +3,7 @@ import { useLang } from '../../../../context/LanguageContext';
 import './index.less';
 
 // 语言循环顺序：点击胶囊按钮切换到下一个语言
-const LANG_ORDER = ['zh', 'en', 'ar'];
+const LANG_ORDER = ['en', 'ar'];
 // 接口数据未加载完成前的兜底文案
 const FALLBACK_LABELS = { zh: '中文', en: 'EN', ar: 'AR' };
 

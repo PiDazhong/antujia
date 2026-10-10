@@ -1,0 +1,163 @@
+@import '../../styles/variables.less';
+@import '../../styles/mixins.less';
+
+// 深色区块：近黑底，顶部金色小字 + 白色大标题 + 通栏森林大图
+// 头部结构/间距与 riyadhManufacturing、ourItalyDesign 一致（section-head 标准组合）；
+// 大图不通栏限宽，左右顶到屏幕边缘；底部黑色渐变上叠放左下角白色描述文案
+.green-el {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: @color-bg-dark; // 近黑底，与上一深色区块连成一片
+  color: @color-text-primary;
+  padding: 48px 0 0 0;
+
+  .respond-mobile({
+    padding: 32px 0 0 0; 
+  });
+
+  &__head {
+    .section-head();
+    padding: 0 24px; // 头部文字水平内边距，与兄弟区块的 24px 一致
+  }
+
+  // 顶部居中小文案（金色 eyebrow，同兄弟区块）
+  &__eyebrow {
+    .section-eyebrow();
+  }
+
+  // 本模块大标题比全局标准（22px）大一号，设计稿为白色单行大标题
+  &__title {
+    .section-title();
+    font-size: @font-size-7xl; // 桌面端 40px
+    line-height: 1.25;
+
+    .respond-mobile({
+      font-size: @font-size-4xl; // 移动端 24px
+    });
+  }
+
+  // 通栏大图容器：高度跟随图片自然比例，不做裁切
+  &__media {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  // 图片按原始比例完整展示：宽 100%，高自适应，不裁不切
+  &__media-img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  // 底部黑色渐变：保证左下角白色描述在亮部画面上也可读
+  &__media-mask {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      fade(@color-bg-black, 85%) 0%,
+      fade(@color-bg-black, 40%) 32%,
+      transparent 55%
+    );
+  }
+
+  // 叠放在图上的描述文案：左下角对齐，白色，限宽折行
+  // 内边距标准：桌面 48px / 移动端 24px
+  &__media-desc {
+    position: absolute;
+    right: @spacing-8;
+    bottom: @spacing-8;
+    left: @spacing-8;
+    max-width: 720px;
+    margin: 0;
+    font-size: @font-size-lg;
+    font-weight: @font-weight-medium;
+    line-height: 1.5;
+    color: @color-text-muted; // 灰白（75% 白），叠在图上比纯白更柔
+    text-align: left;
+
+    .respond-mobile({
+      right: 24px;
+      bottom: 24px;
+      left: 24px;
+      font-size: @font-size-md;
+    });
+  }
+
+  // 认证卖点列表：容器居中、文字整组左对齐，组与组之间留较大空白
+  // 内边距标准：桌面 48px / 移动端 24px
+  &__features {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: @container-max-width;
+    padding: @spacing-7 @spacing-8; // 桌面端四边 48px
+    margin: 0 auto;
+
+    .respond-mobile({
+      padding: 32px 24px; // 移动端四边 24px
+    });
+  }
+
+  // 单组卖点：标题与描述纵向排布，间距 16px
+  &__feature {
+    display: flex;
+    flex-direction: column;
+    gap: @spacing-4;
+  }
+
+  // 卖点标题：字号同 __title（桌面 40px），金色，靠左对齐
+  &__feature-title {
+    margin: 0;
+    font-size: @font-size-7xl; // 桌面端 40px
+    font-weight: @font-weight-regular;
+    line-height: 1.25;
+    color: @color-gold; // 品牌金（variables.less 已有变量）
+    text-align: left;
+
+    .respond-mobile({
+      font-size: @font-size-4xl; // 移动端 24px
+    });
+  }
+
+  // 卖点描述：白色小字，较宽字间距，靠左对齐自然折行
+  &__feature-desc {
+    margin: 0;
+    font-size: @font-size-lg; // 桌面端 16px
+    font-weight: @font-weight-regular;
+    line-height: 1.5;
+    letter-spacing: @letter-spacing-wide;
+    color: @color-text-primary;
+    text-align: left;
+
+    .respond-mobile({
+      font-size: @font-size-md; // 移动端 14px
+    });
+  }
+
+  // 认证证书：2 列圆角卡片，布局同 riyadhManufacturing 的 __collage，图片按原始比例展示
+  &__certs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 48px;
+    width: 100%;
+    max-width: @container-max-width;
+    padding: @spacing-7 @spacing-8; // 桌面端四边 48px，与 __features 一致
+    margin: 0 auto;
+
+    .respond-mobile({
+      padding: 24px 24px 0; // 移动端四边 24px，与 __features 一致
+      gap: 24px;
+    });
+  }
+
+  &__cert-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: @radius-card;
+  }
+}

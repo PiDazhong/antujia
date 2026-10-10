@@ -7,9 +7,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 24px 40px 24px;
   background-color: @color-bg-cream;
   color: @color-text-dark;
+  padding: 48px 24px 32px;
+
+  .respond-mobile({
+    padding: 32px 24px; 
+  });
 
   &__head {
     .section-head();
@@ -41,13 +45,12 @@
     aspect-ratio: 1;
     padding: 24px;
     overflow: hidden;
-    background-color: @color-bg-card;
+    background-color: rgb(234, 231, 222); // 与产品图底色一致，图片加载前无缝衔接
   }
 
   // 后台图为 1080×1960 竖图、元素在正中间：
-  // scale(2.8) = 显示中心 1/2.8 宽区域；translateY 需写在 scale 前面，
   // 才能保证移动的是视觉上的 20px（写在后面会被缩放倍数放大）
-  @card-img-zoom: 2.8;
+  @card-img-zoom: 1;
   @card-img-offset-y: -20px;
 
   &__card-img {

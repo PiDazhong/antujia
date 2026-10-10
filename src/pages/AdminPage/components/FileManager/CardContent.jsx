@@ -1,6 +1,7 @@
 import { Popconfirm } from 'antd';
 import { DeleteOutlined, EditOutlined, HolderOutlined } from '@ant-design/icons';
 import { getLangText } from './utils';
+import Abbr from '../../../../components/Abbr';
 
 // 图片卡片内容（拖拽悬浮层也复用这份渲染）
 /* eslint-disable react/prop-types */
@@ -32,8 +33,8 @@ const CardContent = ({ item, imageUrl, onPreview, onEdit, onDelete, handleListen
       </div>
     </div>
     <div className="image-card-info">
-      <span className="image-card-desc">{getLangText(item.fileDesc)}</span>
-      <span className="image-card-subdesc">{getLangText(item.fileSubDesc)}</span>
+      <Abbr className="image-card-desc" text={getLangText(item.fileDesc)} line={1} />
+      <Abbr className="image-card-subdesc" text={getLangText(item.fileSubDesc)} line={1} />
     </div>
   </>
 );

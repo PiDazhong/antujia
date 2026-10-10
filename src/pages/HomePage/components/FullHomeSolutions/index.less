@@ -7,9 +7,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 24px 40px 24px;
   background-color: @color-text-primary; // 纯白底，与上一区块米白底形成节奏对比
   color: @color-text-dark;
+  padding: 48px 24px 32px;
+
+  .respond-mobile({
+    padding: 32px 24px; 
+  });
 
   &__head {
     .section-head();

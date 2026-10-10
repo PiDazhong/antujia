@@ -29,20 +29,6 @@
   text-overflow: ellipsis;
 }
 
-// 区块通用容器：水平内边距 + 居中
-// 用法：.section { .section-container(); }
-.section-container() {
-  width: 100%;
-  max-width: @container-max-width;
-  padding-right: @section-padding-x;
-  padding-left: @section-padding-x;
-  margin: 0 auto;
-
-  @media (max-width: @breakpoint-mobile) {
-    padding-right: @section-padding-x-mobile;
-    padding-left: @section-padding-x-mobile;
-  }
-}
 
 // 移动端断点快捷写法
 // 用法：.title { font-size: 32px; .respond-mobile({ font-size: 24px; }); }
@@ -82,12 +68,16 @@
 
 .section-eyebrow() {
   margin: 0 0 @section-head-gap;
-  font-size: @font-size-base;
+  font-size: @font-size-lg;
   font-weight: @font-weight-bold;
   letter-spacing: @letter-spacing-stat;
   color: @color-gold-muted;
   text-align: center;
   text-transform: uppercase;
+
+  .respond-mobile({
+    font-size: @font-size-md;
+  });
 }
 
 .section-title() {

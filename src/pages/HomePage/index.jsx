@@ -6,7 +6,7 @@ import FullHomeSolutions from './components/FullHomeSolutions';
 import RiyadhManufacturing from './components/RiyadhManufacturing';
 import OurCapabilities from './components/OurCapabilities';
 import OurItalyDesign from './components/OurItalyDesign';
-import FormAndBranch from './components/FormAndBranch';
+import Green from './components/Green';
 import QualityControl from './components/QualityControl';
 import FormPanel from './components/FormPanel';
 import AboutUs from './components/AboutUs';
@@ -21,7 +21,7 @@ const HomePage = () => {
       <RiyadhManufacturing />
       <OurCapabilities />
       <OurItalyDesign />
-      <FormAndBranch />
+      <Green />
       <QualityControl />
       <FormPanel />
       <AboutUs />
