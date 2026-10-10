@@ -19,6 +19,16 @@
     gap: @spacing-3;
   }
 
+  // 接口返回的品牌图标，替换 2x2 圆点
+  &__brand-img {
+    height: 60px;
+    width: auto;
+    display: block;
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-top: -2px;
+  }
+
   // 2x2 圆点图标，整体约 22px
   &__dots {
     display: grid;
@@ -34,11 +44,10 @@
     }
   }
 
+  // 字标 + 标语叠放容器：标语绝对定位叠在字标上
   &__wordmark {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 3px;
+    position: relative;
+    display: block;
     line-height: 1;
   }
 
@@ -49,12 +58,45 @@
     white-space: nowrap;
   }
 
+  // 接口返回的品牌字标，替换 damons home 文字（在叠放容器中撑开尺寸）
+  // lang=en 时距左 40px，lang=ar 时距右 40px
+  &__name-img {
+    position: relative;
+    height: 20px;
+    width: auto;
+    display: block;
+
+    html[lang='en'] & {
+      left: 0px;
+      top: -6px;
+    }
+
+    html[lang='ar'] & {
+      right: 0;
+      top: -6px;
+    }
+  }
+
   &__slogan {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
     font-size: @font-size-xs;
     font-weight: @font-weight-medium;
     letter-spacing: @letter-spacing-wide;
     color: @color-text-muted;
-    white-space: nowrap;
+
+    // lang=en 时距左 40px，lang=ar 时距右 40px
+    html[lang='en'] & {
+      left: 2px;
+      top: 20px;
+    }
+
+    html[lang='ar'] & {
+      right: 0;
+      top: 20px;
+    }
   }
 
   &__actions {
