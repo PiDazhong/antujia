@@ -1,0 +1,108 @@
+// ============================================================
+// HomePage 全局设计变量
+// 维护全站统一的：颜色 / 字体 / 间距 / 圆角 / 断点 / 层级
+// 组件样式文件中通过 @import 引入：
+//   @import '../../styles/variables.less';
+// 约定：新增样式前先看这里有没有可复用的变量，不要散落硬编码
+// ============================================================
+
+// ---------- 颜色 ----------
+// 主色：近黑底 + 白字 + 金色点缀（奢牌家居风格）
+@color-bg-dark: #0a0a0a; // 深色区块背景（Header 等）
+@color-bg-black: #030303; // 渐变遮罩基准色（HeroImage 等）
+@color-text-primary: #ffffff; // 主文字（深底上的白字）
+@color-text-muted: rgba(255, 255, 255, 0.75); // 次要文字（slogan）
+@color-text-soft: rgba(255, 255, 255, 0.85); // 介于主/次之间的文字（统计标签）
+@color-gold: #b89b5e; // 品牌金：强调数字、装饰线
+@color-gold-light: rgba(245, 230, 196, 0.35); // 浅金半透明：按钮底
+@color-gold-muted: fade(@color-gold, 55%); // 弱化金：浅色区块顶部小字
+@color-white-12: rgba(255, 255, 255, 0.12); // 悬停底色
+@color-white-85-border: rgba(255, 255, 255, 0.85); // 浅色描边（语言胶囊）
+
+// 浅色区块（浅底 + 黑字，如 whatCanIDoForYou）
+// 底色取微暖白（略带黄）：纯白太刺眼，米色又会和后台米白底产品图融为一体
+@color-bg-cream: #faf7f0; // 区块背景
+@color-bg-card: #f2f1ec; // 卡片背景
+@color-text-dark: #0a0a0a; // 浅色底上的主文字
+
+// ---------- 字体 ----------
+@font-family-base:
+  'Microsoft YaHei', 'PingFang SC', sans-serif;
+// 数字/统计用：统一细字重
+@font-weight-light: 300;
+@font-weight-regular: 400;
+@font-weight-medium: 500;
+@font-weight-bold: 700;
+
+@font-size-xs: 8px; // 极小（logo 下 slogan）
+@font-size-sm: 10px; // 小标签（移动端统计标签）
+@font-size-base: 12px; // 基础小字（按钮、标签）
+@font-size-md: 14px; // 正文（CTA 按钮）
+@font-size-lg: 16px; // 较大正文
+@font-size-xl: 18px; // 图标/副标题
+@font-size-2xl: 20px; // logo 名称
+@font-size-3xl: 22px; // 统计单位
+@font-size-4xl: 24px; // 移动端主标题
+@font-size-5xl: 30px; // 移动端统计数字
+@font-size-6xl: 32px; // 桌面端主标题
+@font-size-7xl: 40px; // 桌面端统计数字
+@font-size-8xl: 36px; // 浅色区块大标题（whatCanIDoForYou 等）
+
+// 字间距
+@letter-spacing-tight: 0.3px;
+@letter-spacing-base: 0.5px;
+@letter-spacing-wide: 0.8px;
+@letter-spacing-xwide: 1px;
+@letter-spacing-stat: 1.5px;
+
+// ---------- 间距（4px 基准栅格） ----------
+@spacing-1: 4px;
+@spacing-2: 8px;
+@spacing-3: 10px;
+@spacing-4: 16px;
+@spacing-5: 20px;
+@spacing-6: 28px;
+@spacing-7: 32px;
+@spacing-8: 48px;
+
+// 区块水平内边距
+@section-padding-x: 32px;
+@section-padding-x-mobile: 16px;
+// 区块垂直内边距
+@section-padding-y: 48px;
+@section-padding-y-mobile: 40px;
+
+// 区块头部（小字 + 大标题）垂直间距标准，多模块共用
+@section-head-padding-top: 72px; // 区块顶 → 小字
+@section-head-padding-top-mobile: 48px;
+@section-head-gap: @spacing-5; // 小字 → 大标题（20px）
+@section-head-margin-bottom: @spacing-8; // 大标题 → 下方内容（48px）
+@section-head-margin-bottom-mobile: @spacing-7; // 移动端 32px
+
+// ---------- 圆角 ----------
+@radius-pill: 999px; // 全圆角胶囊（CTA 按钮）
+@radius-lang: 14px; // 语言胶囊
+@radius-card: 12px; // 图片卡片（fullHomeSolutions 等项目案例图）
+@radius-dot: 50%; // 圆点
+
+// ---------- 尺寸 ----------
+@header-height: 56px; // 顶部导航高度
+@hero-min-height: 640px; // 首屏最小高度
+@cta-height: 36px; // CTA 胶囊按钮高度
+@lang-height: 28px; // 语言切换按钮高度
+
+// ---------- 布局 ----------
+@container-max-width: 1200px; // 内容最大宽度（居中使用）
+
+// ---------- 层级 ----------
+@z-bg: 0; // 背景图
+@z-overlay: 1; // 渐变遮罩
+@z-content: 2; // 内容
+@z-header: 100; // 吸顶导航：永远浮在所有区块内容之上
+
+// ---------- 断点 ----------
+@breakpoint-mobile: 768px;
+
+// ---------- 动效 ----------
+@duration-fast: 0.2s;
+@easing-default: ease;

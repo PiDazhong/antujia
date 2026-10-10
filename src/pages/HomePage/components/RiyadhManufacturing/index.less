@@ -1,0 +1,82 @@
+@import '../../styles/variables.less';
+@import '../../styles/mixins.less';
+
+// 深色区块：近黑底 + 白字，顶部小字 + 大标题 + 描述文案 + 2 列竖版图片卡片
+// 布局与 fullHomeSolutions 保持一致：grid 2 列卡片，仅卡片比例（27:49）与卡片底色不同
+.riyadh-manufacturing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: @section-head-padding-top;
+  padding-bottom: @section-padding-y;
+  background-color: @color-bg-dark; // 近黑底，承接上一浅色区块的明暗节奏
+  color: @color-text-primary;
+
+  &__head {
+    .section-head();
+  }
+
+  &__eyebrow {
+    .section-eyebrow();
+  }
+
+  &__title {
+    .section-title();
+  }
+
+  // 大标题下方文案：字号/颜色/粗细与大标题保持一致，仅收窄行宽、收紧间距
+  &__desc {
+    max-width: 640px;
+    margin: @spacing-2 0 0;
+    font-size: @font-size-3xl;
+    font-weight: @font-weight-regular;
+    line-height: 1.3;
+    text-align: center;
+
+    .respond-mobile({
+      font-size: @font-size-2xl;
+    });
+  }
+
+  &__collage {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: @spacing-5; // 卡片间距：桌面端 20px，移动端 10px
+    width: 100%;
+    max-width: @container-max-width;
+    padding-right: @section-padding-x;
+    padding-left: @section-padding-x;
+  }
+
+  // 竖版卡片（27:49），图片等比铺满只裁不拉伸，卡片白底
+  &__card {
+    aspect-ratio: 27 / 49;
+    overflow: hidden;
+    background-color: @color-text-primary; // 白色卡片底
+    border-radius: @radius-card;
+  }
+
+  &__card-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+@media (max-width: @breakpoint-mobile) {
+  .riyadh-manufacturing {
+    padding-top: @section-head-padding-top-mobile;
+    padding-bottom: @section-padding-y-mobile;
+
+    &__collage {
+      gap: @spacing-3;
+      padding-right: @section-padding-x-mobile;
+      padding-left: @section-padding-x-mobile;
+    }
+
+    &__desc {
+      margin-top: @spacing-1;
+    }
+  }
+}

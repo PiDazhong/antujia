@@ -1,4 +1,3 @@
-import { PhoneOutlined } from '@ant-design/icons';
 import useSharkText from '../../hooks/useSharkText';
 import useImage from '../../hooks/useImage';
 import { FILE_BASE_URL } from '../../../../config/uploadModules';
@@ -13,9 +12,13 @@ const HeroImage = () => {
   // [1] 主标题第一行 [2] 主标题第二行 [3] 按钮文案
   // [4]/[5] [6]/[7] [8]/[9] [10]/[11] 底部四项统计的数字和标签
   const sharkObj = useSharkText({ module: 'heroImage' });
-  // imgObj[1]：sort=1 的整版背景图
+  // heroImage 模块图片：
+  // [1] 整版背景图（sort=1） [2] CTA 按钮电话图标（sort=2）
   const imgObj = useImage({ module: 'heroImage' });
   const bgSrc = imgObj[1]?.fileUrl ? FILE_BASE_URL + imgObj[1].fileUrl : null;
+  const ctaIconSrc = imgObj[2]?.fileUrl
+    ? FILE_BASE_URL + imgObj[2].fileUrl
+    : null;
 
   const stats = [
     { value: sharkObj[4], label: sharkObj[5] },
@@ -43,7 +46,9 @@ const HeroImage = () => {
 
       {/* WhatsApp 长条按钮 */}
       <button type="button" className="hero-image__cta">
-        <PhoneOutlined className="hero-image__cta-icon" />
+        {ctaIconSrc && (
+          <img className="hero-image__cta-icon" src={ctaIconSrc} alt="" aria-hidden="true" />
+        )}
         <span>{sharkObj[3]}</span>
       </button>
 
