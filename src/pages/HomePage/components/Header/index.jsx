@@ -2,6 +2,7 @@ import useSharkText from '../../hooks/useSharkText';
 import useImage from '../../hooks/useImage';
 import { useLang } from '../../../../context/LanguageContext';
 import { FILE_BASE_URL } from '../../../../config/uploadModules';
+import CookieBanner from '../CookieBanner';
 import './index.less';
 
 // 语言循环顺序：点击胶囊按钮切换到下一个语言
@@ -24,28 +25,33 @@ const Header = () => {
   };
 
   return (
-    <header className="home-header">
-      {/* 左侧：品牌图标 + 品牌字标（优先取接口图片，未配置时用本地兜底） */}
-      <div className="home-header__brand">
-        <img className="home-header__brand-img" src={brandImg} alt="" />
-        <span className="home-header__wordmark">
-          <img className="home-header__name-img" src={nameImg} alt="" />
-          {sharkObj[1] && <span className="home-header__slogan">{sharkObj[1]}</span>}
-        </span>
-      </div>
+    <>
+      <header className="home-header">
+        {/* 左侧：品牌图标 + 品牌字标（优先取接口图片，未配置时用本地兜底） */}
+        <div className="home-header__brand">
+          <img className="home-header__brand-img" src={brandImg} alt="" />
+          <span className="home-header__wordmark">
+            <img className="home-header__name-img" src={nameImg} alt="" />
+            {sharkObj[1] && <span className="home-header__slogan">{sharkObj[1]}</span>}
+          </span>
+        </div>
 
-      {/* 右侧：语言切换胶囊 + 汉堡菜单 */}
-      <div className="home-header__actions">
-        <button type="button" className="home-header__lang" onClick={toggleLang}>
-          {sharkObj[2] || FALLBACK_LABELS[lang] || lang.toUpperCase()}
-        </button>
-        <button type="button" className="home-header__menu" aria-label="Menu">
-          <span />
-          <span />
-          <span />
-        </button>
-      </div>
-    </header>
+        {/* 右侧：语言切换胶囊 + 汉堡菜单 */}
+        <div className="home-header__actions">
+          <button type="button" className="home-header__lang" onClick={toggleLang}>
+            {sharkObj[2] || FALLBACK_LABELS[lang] || lang.toUpperCase()}
+          </button>
+          <button type="button" className="home-header__menu" aria-label="Menu">
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
+      </header>
+
+      {/* Cookie 同意条：fixed 定位，挂在 Header 下跟随首页展示 */}
+      <CookieBanner />
+    </>
   );
 };
 

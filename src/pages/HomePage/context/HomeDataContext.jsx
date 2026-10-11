@@ -4,12 +4,15 @@ import { API_BASE_URL, API_ENDPOINTS } from '../../../config/uploadModules';
 /**
  * 首页数据上下文
  * 挂载时先拉模块列表，再按模块名并行拉取图片条目（module/query）和文本条目（module/shark/query）
+ * 同时拉取全量码表（codeTable/query，codes 传空数组）
  * value 结构：{ [moduleName]: { shark: { [sharkKey]: sharkText }, image: { [fileId]: item } } }
  *   - shark：以 sharkKey 为键，值为多语言对象 { zh, en, ar }
  *   - image：以 fileId 为键，值为图片条目（保留接口返回顺序，展示时 Object.values 即可）
+ * codeTable：全量码表映射 { [code]: value }，如 codeTable.whatsapp 跳转链接
  */
 const HomeDataContext = createContext({
   modules: {},
+  codeTable: {},
   loading: true,
   error: null,
 });
@@ -41,8 +44,16 @@ const toImageMap = (list) =>
     return acc;
   }, {});
 
+// 码表条目数组 → { [code]: value }
+const toCodeTableMap = (list) =>
+  (Array.isArray(list) ? list : []).reduce((acc, item) => {
+    if (item?.code) acc[item.code] = item.value;
+    return acc;
+  }, {});
+
 export const HomeDataProvider = ({ children }) => {
   const [modules, setModules] = useState({});
+  const [codeTable, setCodeTable] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -53,8 +64,11 @@ export const HomeDataProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       try {
-        // 1. 拉模块列表
-        const list = await post(API_ENDPOINTS.moduleList());
+        // 1. 拉模块列表（码表并行拉取，失败不阻塞整体）
+        const [list, codeList] = await Promise.all([
+          post(API_ENDPOINTS.moduleList()),
+          post(API_ENDPOINTS.codeTableQuery(), { codes: [] }).catch(() => []),
+        ]);
         const moduleNames = (Array.isArray(list) ? list : [])
           .map((m) => (typeof m === 'string' ? m : m?.moduleName))
           .filter(Boolean);
@@ -72,6 +86,7 @@ export const HomeDataProvider = ({ children }) => {
 
         if (!cancelled) {
           setModules(Object.fromEntries(results));
+          setCodeTable(toCodeTableMap(codeList));
         }
       } catch (err) {
         if (!cancelled) setError(err.message);
@@ -89,7 +104,7 @@ export const HomeDataProvider = ({ children }) => {
   console.log('modules', modules);
 
   return (
-    <HomeDataContext.Provider value={{ modules, loading, error }}>
+    <HomeDataContext.Provider value={{ modules, codeTable, loading, error }}>
       {children}
     </HomeDataContext.Provider>
   );

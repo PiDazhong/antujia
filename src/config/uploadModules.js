@@ -65,4 +65,6 @@ export const API_ENDPOINTS = {
   passwordSave: () => '/damonshome-server/password/save',
   // 登录密码删除（需登录）：POST body { password }，最后一条不允许删除
   passwordDelete: () => '/damonshome-server/password/delete',
+  // 码表查询：POST body { codes: string[] }，传空数组返回全量；返回 [{ code, value, desc, sort }]
+  codeTableQuery: () => '/damonshome-server/codeTable/query',
 };

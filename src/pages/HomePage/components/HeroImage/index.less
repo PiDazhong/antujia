@@ -86,10 +86,10 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: @spacing-3;
+    gap: 8px;
     width: min(600px, 100%);
     height: @cta-height;
-    padding: 0 @spacing-5;
+    padding: 0 6px;
     margin-bottom: auto;
     font-size: @font-size-md;
     font-weight: @font-weight-medium;
@@ -99,11 +99,16 @@
     border-radius: @radius-pill;
     cursor: pointer;
     transition: background-color @duration-fast @easing-default;
+
+    // 码表未配置 whatsapp 链接时禁用点击，外观保持不变
+    &:disabled {
+      cursor: default;
+    }
   }
 
   &__cta-icon {
-    width: @font-size-xl;
-    height: @font-size-xl;
+    width: 28px;
+    height: 28px;
     object-fit: contain;
   }
 
@@ -131,8 +136,13 @@
   }
 
   &__stat-value {
-    display: block;
+    // 数字 + 字母单位混排（如 "2BILLION+" / 阿语 "2مليار+"）在 RTL 下会被
+    // 双向算法重排成 "+مليار 2"；数值本身没有阅读方向，强制 LTR 保证
+    // 片段按逻辑顺序排列，与英文版式一致
+    display: inline-flex;
+    align-items: baseline;
     width: 100%;
+    direction: ltr;
     // 数字统一字号，基础字体栈；细字重
     font-family: @font-family-base;
     font-size: @font-size-7xl;

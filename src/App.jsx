@@ -2,9 +2,7 @@ import { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { UpOutlined } from '@ant-design/icons';
 import { ConfigProvider } from 'antd';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import CookieBanner from './components/CookieBanner';
+import Header from './pages/HomePage/components/Header';
 import LetsChat from './components/LetsChat';
 import HomePage from './pages/HomePage';
 import AuthGuard from './pages/AuthGuard';
@@ -48,7 +46,7 @@ function App() {
                 
               </main>
               <Footer />
-              <CookieBanner />
+              
               <LetsChat />
               <button
                 className="back-to-top"
@@ -84,7 +82,6 @@ function App() {
               <main>
                 <PrivacyPage />
               </main>
-              <Footer />
             </div>
           }
         />

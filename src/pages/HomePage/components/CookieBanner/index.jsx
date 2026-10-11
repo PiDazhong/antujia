@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from '../../hooks/useTranslation';
+import useSharkText from '../../hooks/useSharkText';
 import './index.less';
 
 const STORAGE_KEY = 'saudi_damons_cookie_consent';
 
 const CookieBanner = () => {
-  const { t } = useTranslation();
+  // header 模块文本（与 Header 共用同一模块）：
+  // sharkObj[3] = 提示文案 [4] = 隐私政策链接文案 [5] = 接受按钮文案
+  const sharkObj = useSharkText({ module: 'header' });
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -27,13 +29,13 @@ const CookieBanner = () => {
     <div className="cookie-banner">
       <div className="cookie-banner-content">
         <p className="cookie-banner-text">
-          {t('cookie.banner.text')}{' '}
+          {sharkObj[3]}{' '}
           <Link to="/privacy" className="cookie-banner-link">
-            {t('cookie.banner.privacy')}
+            {sharkObj[4]}
           </Link>
         </p>
         <button className="cookie-banner-btn" onClick={handleAccept}>
-          {t('cookie.banner.accept')}
+          {sharkObj[5]}
         </button>
       </div>
     </div>
