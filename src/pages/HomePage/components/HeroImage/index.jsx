@@ -1,6 +1,6 @@
 import useSharkText from '../../hooks/useSharkText';
 import useImage from '../../hooks/useImage';
-import { useHomeData } from '../../context/HomeDataContext';
+import useCodeTable from '../../hooks/useCodeTable';
 import { FILE_BASE_URL } from '../../../../config/uploadModules';
 import { toAbsoluteUrl } from '../../../../utils/url';
 import './index.less';
@@ -22,8 +22,8 @@ const HeroImage = () => {
   const bgSrc = imgObj[1]?.fileUrl ? FILE_BASE_URL + imgObj[1].fileUrl : null;
   const ctaIconSrc = imgObj[2]?.fileUrl ? FILE_BASE_URL + imgObj[2].fileUrl : null;
 
-  // 全量码表里的 whatsapp 跳转链接（HomeDataContext 统一拉取）
-  const { codeTable } = useHomeData();
+  // 全量码表里的 whatsapp 跳转链接（懒加载，首次使用自动请求）
+  const codeTable = useCodeTable();
   const whatsappUrl = toAbsoluteUrl(codeTable?.whatsAppLink);
 
   const handleCtaClick = () => {

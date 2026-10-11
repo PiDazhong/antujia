@@ -1,8 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Spin, Segmented, DatePicker, message } from 'antd';
 import {
-  RiseOutlined,
-  FallOutlined,
   BarChartOutlined,
   LineChartOutlined,
   ExportOutlined,
@@ -20,9 +18,8 @@ import {
 } from 'recharts';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
-import { API_BASE_URL } from '../../config/uploadModules';
+import { API_BASE_URL } from '../../../../config/uploadModules';
 import LogTableList from './LogTableList';
-import './index.less';
 
 const { RangePicker } = DatePicker;
 
@@ -89,9 +86,9 @@ const mergeData = (viewList, submitList, start, end) => {
   return result;
 };
 
-const StatCard = ({ title, total, trend, trendValue, color, data, dataKey, name, onExport }) => {
+/* eslint-disable react/prop-types */
+const StatCard = ({ title, total, color, data, dataKey, name, onExport }) => {
   const [chartType, setChartType] = useState('line');
-  const isUp = trend === 'up';
   const isLine = chartType === 'line';
 
   const commonAxes = (
@@ -182,10 +179,11 @@ const StatCard = ({ title, total, trend, trendValue, color, data, dataKey, name,
   );
 };
 
-const AnalysisPage = () => {
+// 数据分析：访问量/点击量趋势图 + 用户提交日志表格（数据源与原木监控面板一致）
+const AnalysisManager = ({ active }) => {
   const [data, setData] = useState([]);
   const [rawSubmitList, setRawSubmitList] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [range, setRange] = useState('1week');
   const [dates, setDates] = useState(() => {
     const end = dayjs();
@@ -213,10 +211,12 @@ const AnalysisPage = () => {
     }
   }, []);
 
+  // tab 可见时按当前时间范围重新拉取
   useEffect(() => {
+    if (!active) return;
     if (!dates || !dates[0] || !dates[1]) return;
     loadData(dates[0], dates[1]);
-  }, [dates, loadData]);
+  }, [active, dates, loadData]);
 
   const handleRangeChange = (value) => {
     setRange(value);
@@ -258,61 +258,49 @@ const AnalysisPage = () => {
     XLSX.writeFile(wb, `用户点击量_${formatDateStr(dayjs())}.xlsx`);
   };
 
-  const { totalVisits, totalClicks, visitTrend, clickTrend } = useMemo(() => {
+  const { totalVisits, totalClicks } = useMemo(() => {
     if (data.length === 0) {
-      return { totalVisits: 0, totalClicks: 0, visitTrend: 0, clickTrend: 0 };
+      return { totalVisits: 0, totalClicks: 0 };
     }
     const totalVisits = data.reduce((sum, d) => sum + d.visits, 0);
     const totalClicks = data.reduce((sum, d) => sum + d.clicks, 0);
-    const mid = Math.floor(data.length / 2);
-    const firstHalf = data.slice(0, mid).reduce((s, d) => s + d.visits, 0);
-    const secondHalf = data.slice(mid).reduce((s, d) => s + d.visits, 0);
-    const visitTrend = firstHalf === 0 ? 0 : Number((((secondHalf - firstHalf) / firstHalf) * 100).toFixed(1));
-
-    const firstHalfClicks = data.slice(0, mid).reduce((s, d) => s + d.clicks, 0);
-    const secondHalfClicks = data.slice(mid).reduce((s, d) => s + d.clicks, 0);
-    const clickTrend = firstHalfClicks === 0 ? 0 : Number((((secondHalfClicks - firstHalfClicks) / firstHalfClicks) * 100).toFixed(1));
-
-    return { totalVisits, totalClicks, visitTrend, clickTrend };
+    return { totalVisits, totalClicks };
   }, [data]);
 
   return (
-    <div className="analysis-page">
-      <div className="container">
-        <div className="page-header">
-          <div className="header-left">
-            <h1 className="page-title">Data Overview</h1>
-            <p className="page-subtitle">数据监控面板</p>
-          </div>
-          <div className="header-controls">
-            <Segmented
-              className="range-segmented"
-              options={[
-                { label: RANGE_LABELS['1week'], value: '1week' },
-                { label: RANGE_LABELS['1month'], value: '1month' },
-                { label: RANGE_LABELS['3months'], value: '3months' },
-                { label: RANGE_LABELS['6months'], value: '6months' },
-                { label: RANGE_LABELS['1year'], value: '1year' },
-                { label: '自定义', value: 'custom' },
-              ]}
-              value={range}
-              onChange={handleRangeChange}
-            />
-            <RangePicker
-              className="range-picker"
-              value={dates}
-              onChange={handleDatePickerChange}
-              allowClear={false}
-            />
-          </div>
+    <div className="manager-panel analysis-manager">
+      <div className="analysis-toolbar">
+        <div className="toolbar-title">
+          <p>用户访问 / 点击数据监控</p>
         </div>
+        <div className="toolbar-actions">
+          <Segmented
+            className="range-segmented"
+            options={[
+              { label: RANGE_LABELS['1week'], value: '1week' },
+              { label: RANGE_LABELS['1month'], value: '1month' },
+              { label: RANGE_LABELS['3months'], value: '3months' },
+              { label: RANGE_LABELS['6months'], value: '6months' },
+              { label: RANGE_LABELS['1year'], value: '1year' },
+              { label: '自定义', value: 'custom' },
+            ]}
+            value={range}
+            onChange={handleRangeChange}
+          />
+          <RangePicker
+            className="range-picker"
+            value={dates}
+            onChange={handleDatePickerChange}
+            allowClear={false}
+          />
+        </div>
+      </div>
+      <div className="analysis-body">
         <Spin spinning={loading} tip="加载中...">
           <div className="cards-wrapper">
             <StatCard
               title="用户访问量"
               total={totalVisits}
-              trend={visitTrend >= 0 ? 'up' : 'down'}
-              trendValue={Math.abs(visitTrend)}
               color="#2f54eb"
               data={data}
               dataKey="visits"
@@ -321,8 +309,6 @@ const AnalysisPage = () => {
             <StatCard
               title="用户点击量"
               total={totalClicks}
-              trend={clickTrend >= 0 ? 'up' : 'down'}
-              trendValue={Math.abs(clickTrend)}
               color="#08979c"
               data={data}
               dataKey="clicks"
@@ -330,7 +316,7 @@ const AnalysisPage = () => {
               onExport={handleExportSubmit}
             />
           </div>
-          <div className="table-wrapper" style={{ marginTop: 24 }}>
+          <div className="table-wrapper">
             <LogTableList dataList={rawSubmitList} onRefresh={handleRefresh} />
           </div>
         </Spin>
@@ -339,4 +325,4 @@ const AnalysisPage = () => {
   );
 };
 
-export default AnalysisPage;
+export default AnalysisManager;

@@ -38,7 +38,7 @@ export async function authFetch(url, options = {}) {
 
   if (res.status === 401) {
     clearToken();
-    // 管理端请求只在 /manage、/analysis 下发出，401 说明 token 失效，回到登录页
+    // 管理端请求只在 /manage 下发出，401 说明 token 失效，回到登录页
     window.location.reload();
   }
 

@@ -7,8 +7,8 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
-import { API_BASE_URL } from '../../config/uploadModules';
-import Abbr from '../../components/Abbr';
+import { API_BASE_URL } from '../../../../config/uploadModules';
+import Abbr from '../../../../components/Abbr';
 
 const LogTableList = ({ dataList = [], onRefresh }) => {
   const [blackIps, setBlackIps] = useState([]);

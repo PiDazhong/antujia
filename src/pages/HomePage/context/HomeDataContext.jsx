@@ -1,20 +1,24 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useCallback, useRef, useState } from 'react';
 import { API_BASE_URL, API_ENDPOINTS } from '../../../config/uploadModules';
 
 /**
- * 首页数据上下文
- * 挂载时先拉模块列表，再按模块名并行拉取图片条目（module/query）和文本条目（module/shark/query）
- * 同时拉取全量码表（codeTable/query，codes 传空数组）
- * value 结构：{ [moduleName]: { shark: { [sharkKey]: sharkText }, image: { [fileId]: item } } }
- *   - shark：以 sharkKey 为键，值为多语言对象 { zh, en, ar }
- *   - image：以 fileId 为键，值为图片条目（保留接口返回顺序，展示时 Object.values 即可）
- * codeTable：全量码表映射 { [code]: value }，如 codeTable.whatsapp 跳转链接
+ * 首页数据上下文（懒加载版）
+ * 不再挂载时全量预载所有模块，改为按模块名懒加载 + 缓存：
+ * 哪个组件渲染了哪个模块，才请求哪个模块的数据（shark + image），
+ * 隐私页只用 Header 时只会请求 header 一个模块
+ * value 结构：
+ *   modules: { [moduleName]: { shark: { [sharkKey]: sharkText }, image: { [fileId]: item } } }
+ *     - shark：以 sharkKey 为键，值为多语言对象 { zh, en, ar }
+ *     - image：以 fileId 为键，值为图片条目（保留接口返回顺序，展示时 Object.values 即可）
+ *   codeTable：全量码表映射 { [code]: value }，首次有组件调用 ensureCodeTable 时才请求
+ *   ensureModule(moduleName)：请求并缓存指定模块（重复调用自动去重）
+ *   ensureCodeTable()：请求并缓存全量码表（重复调用自动去重）
  */
 const HomeDataContext = createContext({
   modules: {},
   codeTable: {},
-  loading: true,
-  error: null,
+  ensureModule: () => {},
+  ensureCodeTable: () => {},
 });
 
 const post = async (endpoint, body) => {
@@ -54,57 +58,36 @@ const toCodeTableMap = (list) =>
 export const HomeDataProvider = ({ children }) => {
   const [modules, setModules] = useState({});
   const [codeTable, setCodeTable] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // 已请求（含进行中）的模块 / 码表，用于去重：true 表示无需再发请求
+  const requestedModules = useRef({});
+  const codeTableRequested = useRef(false);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    const load = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        // 1. 拉模块列表（码表并行拉取，失败不阻塞整体）
-        const [list, codeList] = await Promise.all([
-          post(API_ENDPOINTS.moduleList()),
-          post(API_ENDPOINTS.codeTableQuery(), { codes: [] }).catch(() => []),
-        ]);
-        const moduleNames = (Array.isArray(list) ? list : [])
-          .map((m) => (typeof m === 'string' ? m : m?.moduleName))
-          .filter(Boolean);
-
-        // 2. 按模块名并行拉 shark + image，单个模块失败不阻塞整体
-        const results = await Promise.all(
-          moduleNames.map(async (moduleName) => {
-            const [shark, image] = await Promise.all([
-              post(API_ENDPOINTS.sharkQuery(), { moduleName }).catch(() => []),
-              post(API_ENDPOINTS.moduleQuery(), { moduleName }).catch(() => []),
-            ]);
-            return [moduleName, { shark: toSharkMap(shark), image: toImageMap(image) }];
-          })
-        );
-
-        if (!cancelled) {
-          setModules(Object.fromEntries(results));
-          setCodeTable(toCodeTableMap(codeList));
-        }
-      } catch (err) {
-        if (!cancelled) setError(err.message);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-
-    load();
-    return () => {
-      cancelled = true;
-    };
+  // 按模块名懒加载：shark + image 并行，单个失败不阻塞，去重防止 StrictMode 双调用重复请求
+  const ensureModule = useCallback((moduleName) => {
+    if (!moduleName || requestedModules.current[moduleName]) return;
+    requestedModules.current[moduleName] = true;
+    Promise.all([
+      post(API_ENDPOINTS.sharkQuery(), { moduleName }).catch(() => []),
+      post(API_ENDPOINTS.moduleQuery(), { moduleName }).catch(() => []),
+    ]).then(([shark, image]) => {
+      setModules((prev) => ({
+        ...prev,
+        [moduleName]: { shark: toSharkMap(shark), image: toImageMap(image) },
+      }));
+    });
   }, []);
 
-  console.log('modules', modules);
+  // 全量码表懒加载（codes 传空数组返回全量）
+  const ensureCodeTable = useCallback(() => {
+    if (codeTableRequested.current) return;
+    codeTableRequested.current = true;
+    post(API_ENDPOINTS.codeTableQuery(), { codes: [] })
+      .then((list) => setCodeTable(toCodeTableMap(list)))
+      .catch(() => {});
+  }, []);
 
   return (
-    <HomeDataContext.Provider value={{ modules, codeTable, loading, error }}>
+    <HomeDataContext.Provider value={{ modules, codeTable, ensureModule, ensureCodeTable }}>
       {children}
     </HomeDataContext.Provider>
   );

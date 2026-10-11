@@ -4,6 +4,7 @@ import FileManager from './components/FileManager';
 import TextManager from './components/TextManager';
 import CodeTableManager from './components/CodeTableManager';
 import PasswordManager from './components/PasswordManager';
+import AnalysisManager from './components/AnalysisManager';
 import './index.less';
 
 const AdminPage = () => {
@@ -35,6 +36,7 @@ const AdminPage = () => {
           { key: 'texts', label: '文本管理', children: <TextManager active={activeKey === 'texts'} />, forceRender: true },
           { key: 'code', label: '信息管理', children: <CodeTableManager active={activeKey === 'code'} />, forceRender: true },
           { key: 'password', label: '登录管理', children: <PasswordManager active={activeKey === 'password'} />, forceRender: true },
+          { key: 'analysis', label: '数据分析', children: <AnalysisManager active={activeKey === 'analysis'} />, forceRender: true },
         ]}
       />
     </div>

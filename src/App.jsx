@@ -3,13 +3,11 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { UpOutlined } from '@ant-design/icons';
 import { ConfigProvider } from 'antd';
 import Header from './pages/HomePage/components/Header';
-import LetsChat from './components/LetsChat';
 import HomePage from './pages/HomePage';
 import AuthGuard from './pages/AuthGuard';
-import AnalysisGuard from './pages/AnalysisGuard';
-import AnalysisPage from './pages/AnalysisPage';
 import PrivacyPage from './pages/PrivacyPage';
 import { useLang } from './context/LanguageContext';
+import { HomeDataProvider } from './pages/HomePage/context/HomeDataContext';
 import { writeLog } from './utils/log';
 import './App.less';
 
@@ -23,7 +21,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const excluded = ['/manage', '/analysis'];
+    const excluded = ['/manage'];
     if (!excluded.includes(location.pathname)) {
       writeLog('view');
     }
@@ -35,13 +33,16 @@ function App() {
 
   return (
     <ConfigProvider direction={lang === 'ar' ? 'rtl' : 'ltr'}>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div className="app">
-              <HomePage />
-              {/* <Header />
+      {/* 数据 Provider 全局挂载（模块懒加载）：隐私页等复用 Header 时也能拿到 context，
+          且只请求实际用到的模块，不会拉全量 */}
+      <HomeDataProvider>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div className="app">
+                <HomePage />
+                {/* <Header />
               <main>
                 
               </main>
@@ -55,37 +56,30 @@ function App() {
               >
                 <UpOutlined />
               </button> */}
-            </div>
-          }
-        />
-        <Route
-          path="/manage"
-          element={
-            <ConfigProvider direction="ltr">
-              <AuthGuard />
-            </ConfigProvider>
-          }
-        />
-        <Route
-          path="/analysis"
-          element={
-            <ConfigProvider direction="ltr">
-              <AnalysisGuard />
-            </ConfigProvider>
-          }
-        />
-        <Route
-          path="/privacy"
-          element={
-            <div className="app">
-              <Header />
-              <main>
-                <PrivacyPage />
-              </main>
-            </div>
-          }
-        />
-      </Routes>
+              </div>
+            }
+          />
+          <Route
+            path="/manage"
+            element={
+              <ConfigProvider direction="ltr">
+                <AuthGuard />
+              </ConfigProvider>
+            }
+          />
+          <Route
+            path="/privacy"
+            element={
+              <div className="app">
+                <Header />
+                <main>
+                  <PrivacyPage />
+                </main>
+              </div>
+            }
+          />
+        </Routes>
+      </HomeDataProvider>
     </ConfigProvider>
   );
 }
