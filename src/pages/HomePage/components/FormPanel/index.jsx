@@ -28,17 +28,11 @@ const sanitizeString = (str) => {
 
 const SPAM_KEYWORDS = ['test', 'spam', 'xxx', 'http', 'https', 'www.'];
 
-// 提交相关提示文案（项目无 t()，按当前语言本地取值；ar 时页面为 RTL）
-const TIPS = {
-  success: { zh: '提交成功，我们会尽快联系您', en: 'Submitted successfully, we will contact you soon', ar: 'تم الإرسال بنجاح، سنتواصل معك قريباً' },
-  error: { zh: '提交失败，请稍后重试', en: 'Submission failed, please try again later', ar: 'فشل الإرسال، يرجى المحاولة لاحقاً' },
-  rateLimit: { zh: '提交太频繁，请 {{seconds}} 秒后再试', en: 'Please wait {{seconds}} seconds before resubmitting', ar: 'يرجى الانتظار {{seconds}} ثانية قبل إعادة الإرسال' },
-};
-
 const FormPanel = () => {
   // formpanel 模块文本（表单各字段标签，按 sharkKey 顺序）：
   // [1] Your name     [2] Phone Number  [3] Your Email
   // [4] Your Company  [5] Subject       [6] Your Question
+  // [7] 提交按钮      [8] 提交成功提示   [9] 提交失败提示  [10] 提交限流提示
   const sharkObj = useSharkText({ module: 'formpanel' });
   // formpanel 模块图片：三张图标（卡车/金币/奖章），标题取 fileDesc，副标题取 fileSubDesc（均为多语言字段）
   const imgObj = useImage({ module: 'formpanel' });
@@ -67,7 +61,7 @@ const FormPanel = () => {
       const remaining = getRemainingCooldown();
       if (remaining > 0) {
         const seconds = Math.ceil(remaining / 1000);
-        message.warning(TIPS.rateLimit[lang]?.replace('{{seconds}}', seconds) ?? TIPS.rateLimit.en.replace('{{seconds}}', seconds));
+        message.warning((sharkObj[10] ?? '').replace('{{seconds}}', seconds));
         return;
       }
 
@@ -77,16 +71,11 @@ const FormPanel = () => {
       }
 
       sanitizedValues = Object.fromEntries(
-        Object.entries(form).map(([k, v]) => [
-          k,
-          typeof v === 'string' ? sanitizeString(v) : v,
-        ])
+        Object.entries(form).map(([k, v]) => [k, typeof v === 'string' ? sanitizeString(v) : v])
       );
 
       const hasSpam = Object.values(sanitizedValues).some(
-        (v) =>
-          typeof v === 'string' &&
-          SPAM_KEYWORDS.some((kw) => v.toLowerCase().includes(kw))
+        (v) => typeof v === 'string' && SPAM_KEYWORDS.some((kw) => v.toLowerCase().includes(kw))
       );
 
       // 接口字段（saudi-server/emailRoute）：name/company/phone/email/message/to
@@ -108,7 +97,7 @@ const FormPanel = () => {
       }
 
       localStorage.setItem(RATE_LIMIT_KEY, Date.now().toString());
-      message.success(TIPS.success[lang] ?? TIPS.success.en, 6);
+      message.success(sharkObj[8], 6);
       // 埋点：当前项目 logRoute 约定 action 必须为 'submit' 且表单字段平铺，服务端才落 name/company/phone/email/message
       writeLog('submit', mailPayload);
       setForm({
@@ -121,7 +110,7 @@ const FormPanel = () => {
         website: '',
       });
     } catch (err) {
-      message.error(TIPS.error[lang] ?? TIPS.error.en);
+      message.error(sharkObj[9] ?? '');
       // 埋点：失败原因记录到 action（服务端固定落 timestamp/ip/device，错误文本由 message 字段带过）
       writeLog('submit_error', {
         error: err?.message || String(err),
