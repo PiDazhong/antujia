@@ -30,9 +30,9 @@
     gap: @spacing-3; // 标签与输入框间距 10px
   }
 
-  // 字段标签：白色 16px + 宽字距（设计稿为加宽排版）
+  // 字段标签：白色 14px + 宽字距（设计稿为加宽排版）
   &__label {
-    font-size: @font-size-lg;
+    font-size: @font-size-md;
     font-weight: @font-weight-medium;
     letter-spacing: @letter-spacing-xwide;
     color: @color-text-primary;
@@ -68,11 +68,14 @@
     overflow: hidden;
   }
 
-  // 提交按钮：站点统一的浅金胶囊按钮（同 HeroImage CTA），文字取后台 sharkObj[7]
+  // 提交按钮：站点统一的浅金胶囊按钮（同 HeroImage CTA），文字取后台 sharkObj[7]，整行满宽
   &__submit {
-    align-self: flex-start; // 跟随文档方向：ltr 居左，ar(rtl) 自动镜像到右侧
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: @spacing-2;
+    width: 100%;
     height: @cta-height;
-    padding: 0 @spacing-8;
     margin-top: @spacing-2;
     font-size: @font-size-md;
     font-weight: @font-weight-medium;
@@ -88,5 +91,51 @@
       cursor: default;
       opacity: 0.6;
     }
+  }
+
+  // 表单下方特性列表：图标在左、标题/副标题在右，整列与表单同宽限宽居中
+  &__features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: @container-max-width;
+    margin-top: @spacing-8; // 48px
+  }
+
+  &__feature {
+    display: flex;
+    align-items: center;
+    gap: @spacing-3; // 10px
+  }
+
+  // 特性图标：原图多为白图，按固定尺寸展示
+  &__feature-icon {
+    width: 96px;
+    height: 96px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  &__feature-texts {
+    display: flex;
+    flex-direction: column;
+    gap: @spacing-3;
+  }
+
+  // 特性标题：白色加宽字距
+  &__feature-title {
+    margin: 0;
+    font-size: @font-size-md;
+    font-weight: @font-weight-medium;
+    letter-spacing: @letter-spacing-xwide;
+    color: @color-text-primary;
+  }
+
+  // 特性副标题：弱化灰白
+  &__feature-sub {
+    margin: 0;
+    font-size: @font-size-base;
+    color: @color-text-muted;
   }
 }

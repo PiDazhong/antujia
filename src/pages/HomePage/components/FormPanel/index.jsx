@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { message } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import useSharkText from '../../hooks/useSharkText';
+import useImage from '../../hooks/useImage';
 import useCodeTable from '../../hooks/useCodeTable';
 import { useLang } from '../../../../context/LanguageContext';
+import { FILE_BASE_URL } from '../../../../config/uploadModules';
 import { writeLog, sendMail } from '../../../../utils/log';
 import './index.less';
 
@@ -37,6 +40,8 @@ const FormPanel = () => {
   // [1] Your name     [2] Phone Number  [3] Your Email
   // [4] Your Company  [5] Subject       [6] Your Question
   const sharkObj = useSharkText({ module: 'formpanel' });
+  // formpanel 模块图片：三张图标（卡车/金币/奖章），标题取 fileDesc，副标题取 fileSubDesc（均为多语言字段）
+  const imgObj = useImage({ module: 'formpanel' });
   const codeTable = useCodeTable(); // codeTable.receiveEmail：询盘收件邮箱
   const { lang } = useLang();
 
@@ -84,26 +89,28 @@ const FormPanel = () => {
           SPAM_KEYWORDS.some((kw) => v.toLowerCase().includes(kw))
       );
 
+      // 接口字段（saudi-server/emailRoute）：name/company/phone/email/message/to
+      // 服务端无独立 subject 字段，合并进 message；to 取码表 receiveEmail（缺省走服务端默认收件人）
+      const mailPayload = {
+        name: sanitizedValues.name,
+        company: sanitizedValues.company,
+        phone: sanitizedValues.phone,
+        email: sanitizedValues.email,
+        message: sanitizedValues.subject
+          ? `Subject: ${sanitizedValues.subject}\n${sanitizedValues.question}`
+          : sanitizedValues.question,
+        to: codeTable.receiveEmail,
+      };
+
       // 命中垃圾关键词时不真正发信，但对外表现与成功一致（不暴露校验细节）
       if (!hasSpam) {
-        // 接口字段（saudi-server/emailRoute）：name/company/phone/email/message/to
-        // 服务端无独立 subject 字段，合并进 message；to 取码表 receiveEmail（缺省走服务端默认收件人）
-        const mailPayload = {
-          name: sanitizedValues.name,
-          company: sanitizedValues.company,
-          phone: sanitizedValues.phone,
-          email: sanitizedValues.email,
-          message: sanitizedValues.subject
-            ? `Subject: ${sanitizedValues.subject}\n${sanitizedValues.question}`
-            : sanitizedValues.question,
-          to: codeTable.receiveEmail,
-        };
         await sendMail(mailPayload);
       }
 
       localStorage.setItem(RATE_LIMIT_KEY, Date.now().toString());
       message.success(TIPS.success[lang] ?? TIPS.success.en, 6);
-      writeLog('form_submit', sanitizedValues);
+      // 埋点：当前项目 logRoute 约定 action 必须为 'submit' 且表单字段平铺，服务端才落 name/company/phone/email/message
+      writeLog('submit', mailPayload);
       setForm({
         name: '',
         phone: '',
@@ -115,14 +122,28 @@ const FormPanel = () => {
       });
     } catch (err) {
       message.error(TIPS.error[lang] ?? TIPS.error.en);
-      writeLog('form_submit_error', {
+      // 埋点：失败原因记录到 action（服务端固定落 timestamp/ip/device，错误文本由 message 字段带过）
+      writeLog('submit_error', {
         error: err?.message || String(err),
-        values: sanitizedValues,
+        message: `submit failed: ${err?.message || String(err)}`,
       });
     } finally {
       setSubmitting(false);
     }
   };
+
+  // 表单下方三张特性图（imgObj[1]~[3]）：图标 + 标题(fileDesc) + 副标题(fileSubDesc)，均按当前语言取值
+  const featureItems = [1, 2, 3]
+    .map((sort) => {
+      const item = imgObj[sort];
+      if (!item?.fileUrl) return null;
+      return {
+        src: FILE_BASE_URL + item.fileUrl,
+        title: item?.fileDesc?.[lang],
+        subTitle: item?.fileSubDesc?.[lang],
+      };
+    })
+    .filter(Boolean);
 
   return (
     <section className="form-panel">
@@ -206,9 +227,25 @@ const FormPanel = () => {
           disabled={submitting}
           onClick={handleSubmit}
         >
-          {submitting ? '…' : sharkObj[7]}
+          {submitting && <LoadingOutlined className="form-panel__submit-icon" />}
+          {sharkObj[7]}
         </button>
       </div>
+
+      {/* 特性列表：imgObj[1]~[3]，图标在左、标题/副标题在右，纵向堆叠 */}
+      {featureItems.length > 0 && (
+        <div className="form-panel__features">
+          {featureItems.map((item, index) => (
+            <div className="form-panel__feature" key={index}>
+              <img className="form-panel__feature-icon" src={item.src} alt={item.title ?? ''} />
+              <div className="form-panel__feature-texts">
+                {item.title && <p className="form-panel__feature-title">{item.title}</p>}
+                {item.subTitle && <p className="form-panel__feature-sub">{item.subTitle}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 };
