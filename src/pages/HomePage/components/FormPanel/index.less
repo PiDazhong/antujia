@@ -60,12 +60,15 @@
   }
 
   // 蜜罐字段：视觉隐藏但对机器人可见（不能用 display:none，否则机器人会跳过）
+  // 用裁剪而非 left:-9999px 位移：位移会相对初始包含块把页面横向撑出 ~10000px 溢出
   &__honeypot {
     position: absolute;
-    left: -9999px;
     width: 1px;
     height: 1px;
     overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   // 提交按钮：站点统一的浅金胶囊按钮（同 HeroImage CTA），文字取后台 sharkObj[7]，整行满宽
