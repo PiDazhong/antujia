@@ -1,3 +1,4 @@
+import { PhoneFilled } from '@ant-design/icons';
 import useSharkText from '../../hooks/useSharkText';
 import useImage from '../../hooks/useImage';
 import useCodeTable from '../../hooks/useCodeTable';
@@ -17,10 +18,9 @@ const HeroImage = () => {
   // [4]/[5] [6]/[7] [8]/[9] [10]/[11] 底部四项统计的数字和标签
   const sharkObj = useSharkText({ module: 'heroImage' });
   // heroImage 模块图片：
-  // [1] 整版背景图（sort=1） [2] CTA 按钮电话图标（sort=2）
+  // [1] 整版背景图（sort=1）
   const imgObj = useImage({ module: 'heroImage' });
   const bgSrc = imgObj[1]?.fileUrl ? FILE_BASE_URL + imgObj[1].fileUrl : null;
-  const ctaIconSrc = imgObj[2]?.fileUrl ? FILE_BASE_URL + imgObj[2].fileUrl : null;
 
   // 全量码表里的 whatsapp 跳转链接（懒加载，首次使用自动请求）
   const codeTable = useCodeTable();
@@ -57,9 +57,7 @@ const HeroImage = () => {
         onClick={handleCtaClick}
         disabled={!whatsappUrl}
       >
-        {ctaIconSrc && (
-          <img className="hero-image__cta-icon" src={ctaIconSrc} alt="" aria-hidden="true" />
-        )}
+        <PhoneFilled className="hero-image__cta-icon" />
         <span>{sharkObj[3]}</span>
       </button>
 

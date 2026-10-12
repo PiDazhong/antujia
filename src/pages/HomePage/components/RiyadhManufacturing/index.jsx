@@ -7,16 +7,10 @@ const RiyadhManufacturing = () => {
   // riyadhmanufacturing 模块文本：
   // [1] 顶部居中小文案 [2] 白色大标题 [3] 大标题下方描述文案
   const sharkObj = useSharkText({ module: 'RiyadhManufacturingBase' });
-  // imgObj[1]~[2]：工厂实拍图，纯图无文字标签
+  // imgObj[1]：整幅排版图片（原 2 张工厂实拍合并为 1 张），按原始比例完整展示
   const imgObj = useImage({ module: 'RiyadhManufacturingBase' });
 
-  const items = Array.from({ length: 2 }, (_, i) => {
-    const item = imgObj[i + 1];
-    if (!item?.fileUrl) return null;
-    return {
-      src: FILE_BASE_URL + item.fileUrl,
-    };
-  }).filter(Boolean);
+  const collageSrc = imgObj[1]?.fileUrl ? FILE_BASE_URL + imgObj[1].fileUrl : null;
 
   return (
     <section className="riyadh-manufacturing">
@@ -26,14 +20,10 @@ const RiyadhManufacturing = () => {
         {sharkObj[3] && <p className="riyadh-manufacturing__desc">{sharkObj[3]}</p>}
       </div>
 
-      {/* 2 列图片卡片，图片来源 sort=1~2，卡片比例 27:49 */}
-      {items.length > 0 && (
+      {/* 整幅图片（sort=1），全宽按原始比例展示，不裁切 */}
+      {collageSrc && (
         <div className="riyadh-manufacturing__collage">
-          {items.map((item, index) => (
-            <div className="riyadh-manufacturing__card" key={index}>
-              <img className="riyadh-manufacturing__card-img" src={item.src} alt="" />
-            </div>
-          ))}
+          <img className="riyadh-manufacturing__collage-img" src={collageSrc} alt="" />
         </div>
       )}
     </section>

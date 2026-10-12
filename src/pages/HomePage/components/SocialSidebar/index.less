@@ -1,0 +1,126 @@
+@import '../../styles/variables.less';
+
+// 左侧悬浮社交栏：物理固定在屏幕最左侧、垂直居中，竖排
+// 位置用 left/right 物理属性（非逻辑属性）：需求指定钉死在左缘，RTL 下也不镜像
+.social-sidebar {
+  position: fixed;
+  top: 50%;
+  left: @spacing-6;
+  z-index: @z-header;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: @spacing-2;
+  transform: translateY(-50%);
+
+  &__list {
+    // grid 0fr→1fr：折叠时高度为 0，展开时自动撑到内容高度，transition 生效
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows @duration-fast @easing-default;
+
+    .is-open & {
+      grid-template-rows: 1fr;
+    }
+
+    // 0fr 时让内容溢出隐藏；1fr 时取消，否则按钮无法点击
+    > * {
+      overflow: hidden;
+    }
+
+    .is-open > * {
+      overflow: visible;
+    }
+  }
+
+  // 单个社交按钮：竖排堆叠，展开时从上往下依次淡入上移
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-bottom: @spacing-2;
+    font-size: @font-size-xl;
+    color: @color-text-primary;
+    cursor: pointer;
+    background: fade(@color-bg-black, 55%);
+    border: none;
+    border-radius: @radius-dot;
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity @duration-fast @easing-default,
+      transform @duration-fast @easing-default,
+      background-color @duration-fast @easing-default;
+
+    &:hover {
+      background: @color-gold;
+    }
+
+    // 码表未配置对应链接时禁用点击，外观保持不变
+    &:disabled {
+      cursor: default;
+
+      &:hover {
+        background: fade(@color-bg-black, 55%);
+      }
+    }
+
+    // 展开时依次出现：第 1 个在收起按钮动画开始后即可见，依次 +0.04s
+    .is-open & {
+      opacity: 1;
+      transform: translateY(0);
+
+      &:nth-child(1) {
+        transition-delay: 0.04s;
+      }
+
+      &:nth-child(2) {
+        transition-delay: 0.08s;
+      }
+
+      &:nth-child(3) {
+        transition-delay: 0.12s;
+      }
+
+      &:nth-child(4) {
+        transition-delay: 0.16s;
+      }
+    }
+  }
+
+  &__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    font-size: @font-size-md;
+    color: @color-text-primary;
+    cursor: pointer;
+    background: @color-gold;
+    border: none;
+    border-radius: @radius-dot;
+    transition: background-color @duration-fast @easing-default;
+
+    &:hover {
+      background: fade(@color-gold, 85%);
+    }
+  }
+
+  // 箭头：展开（可收起）朝下，收起（提示有内容）朝上并配合弹性缩放，形成明确的反馈
+  &__toggle-icon {
+    transition: transform @duration-fast @easing-default;
+
+    .social-sidebar:not(.is-open) & {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+@media (max-width: @breakpoint-mobile) {
+  .social-sidebar {
+    left: @spacing-4;
+  }
+}

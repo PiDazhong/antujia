@@ -1,0 +1,31 @@
+@import '../../styles/variables.less';
+
+// 右侧悬浮 CTA：物理固定在屏幕最右侧、垂直居中
+// 位置用 left/right 物理属性（非逻辑属性）：需求指定钉死在右缘，RTL 下也不镜像
+// 元素本身就是 img：不再强制拉伸进正方形盒子，保持原图宽高比，按设备像素栅格化
+.floating-cta {
+  position: fixed;
+  top: 50%;
+  right: @spacing-6;
+  z-index: @z-header;
+  display: block;
+  width: 64px;
+  height: auto; // 原图 148x148 正方形时自然就是 64x64；非正方形时等比缩放
+  cursor: pointer;
+  // 图片带透明底时垫一层投影，保证浅区块上也看得清
+  filter: drop-shadow(0 4px 8px fade(@color-bg-black, 35%));
+  will-change: transform;
+  transform: translateY(-50%);
+  transition: filter @duration-fast @easing-default;
+
+  &:hover {
+    filter: drop-shadow(0 6px 12px fade(@color-bg-black, 45%));
+  }
+}
+
+@media (max-width: @breakpoint-mobile) {
+  .floating-cta {
+    right: @spacing-4;
+    width: 48px;
+  }
+}

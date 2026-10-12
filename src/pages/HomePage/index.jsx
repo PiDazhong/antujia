@@ -9,6 +9,8 @@ import Green from './components/Green';
 import QualityControl from './components/QualityControl';
 import FormPanel from './components/FormPanel';
 import AboutUs from './components/AboutUs';
+import FloatingCta from './components/FloatingCta';
+import SocialSidebar from './components/SocialSidebar';
 
 // 数据由 App.jsx 全局挂载的 HomeDataProvider 提供（模块懒加载），这里不再单独包裹
 const HomePage = () => {
@@ -25,6 +27,9 @@ const HomePage = () => {
       <QualityControl />
       <FormPanel />
       <AboutUs />
+      {/* 屏幕两侧悬浮：右侧 CTA 图 / 左侧社交栏（fixed 定位，独立于区块流） */}
+      <FloatingCta />
+      <SocialSidebar />
     </>
   );
 };
