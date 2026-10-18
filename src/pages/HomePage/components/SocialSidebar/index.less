@@ -15,22 +15,28 @@
 
   &__list {
     // grid 0fr→1fr：折叠时高度为 0，展开时自动撑到内容高度，transition 生效
+    // 注意：grid 自动布局会给每个 button 单独一行，grid-template-rows: 0fr 只能收起第一行，
+    // 所以必须包一层 __inner，让被折叠的始终是唯一子节点
     display: grid;
     grid-template-rows: 0fr;
-    transition: grid-template-rows @duration-fast @easing-default;
+    // 收起（回到默认态）：按钮先快速淡出（见 __item），高度延迟 0.15s 再折叠，
+    // 保证高度动画期间按钮已不可见，避免被 overflow 裁剪出压扁/变窄的观感
+    transition: grid-template-rows @duration-base @easing-default 0.15s;
 
     .is-open & {
       grid-template-rows: 1fr;
+      // 展开：立即撑开高度，按钮等高度到位后由 __item 依次延迟淡入
+      transition-delay: 0s;
     }
+  }
 
-    // 0fr 时让内容溢出隐藏；1fr 时取消，否则按钮无法点击
-    > * {
-      overflow: hidden;
-    }
-
-    .is-open > * {
-      overflow: visible;
-    }
+  // grid 的唯一子节点：overflow hidden 让 0fr 真正生效（同时裁掉不可见区域，收起后不可点击）
+  &__inner {
+    display: flex;
+    flex-direction: column;
+    gap: @spacing-2;
+    min-height: 0;
+    overflow: hidden;
   }
 
   // 单个社交按钮：竖排堆叠，展开时从上往下依次淡入上移
@@ -40,7 +46,6 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    margin-bottom: @spacing-2;
     font-size: @font-size-xl;
     color: @color-text-primary;
     cursor: pointer;
@@ -49,9 +54,10 @@
     border-radius: @radius-dot;
     opacity: 0;
     transform: translateY(8px);
+    // 收起（回到默认态）：快速同步淡出，不带错峰、不等待
     transition:
-      opacity @duration-fast @easing-default,
-      transform @duration-fast @easing-default,
+      opacity 0.15s @easing-default,
+      transform 0.15s @easing-default,
       background-color @duration-fast @easing-default;
 
     &:hover {
@@ -67,25 +73,31 @@
       }
     }
 
-    // 展开时依次出现：第 1 个在收起按钮动画开始后即可见，依次 +0.04s
+    // 展开：慢速淡入上移；先等 __list 高度基本撑开，再依次错峰出现，
+    // 避免按钮在高度动画中途被 overflow 裁剪变形。
+    // delay 按属性一一对应（opacity/transform/background-color），不影响 hover 背景色的响应
     .is-open & {
       opacity: 1;
       transform: translateY(0);
+      transition:
+        opacity @duration-base @easing-default,
+        transform @duration-base @easing-default,
+        background-color @duration-fast @easing-default;
 
       &:nth-child(1) {
-        transition-delay: 0.04s;
+        transition-delay: 0.2s, 0.2s, 0s;
       }
 
       &:nth-child(2) {
-        transition-delay: 0.08s;
+        transition-delay: 0.26s, 0.26s, 0s;
       }
 
       &:nth-child(3) {
-        transition-delay: 0.12s;
+        transition-delay: 0.32s, 0.32s, 0s;
       }
 
       &:nth-child(4) {
-        transition-delay: 0.16s;
+        transition-delay: 0.38s, 0.38s, 0s;
       }
     }
   }
@@ -111,7 +123,7 @@
 
   // 箭头：展开（可收起）朝下，收起（提示有内容）朝上并配合弹性缩放，形成明确的反馈
   &__toggle-icon {
-    transition: transform @duration-fast @easing-default;
+    transition: transform @duration-base @easing-default;
 
     .social-sidebar:not(.is-open) & {
       transform: rotate(180deg);

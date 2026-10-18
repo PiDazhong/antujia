@@ -7,7 +7,11 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
+  // 首屏撑满：hero 高度 = 视口高度 - 顶部 header(56px)；
+  // svh 为移动端动态视口单位（兼容浏览器工具栏伸缩），并保留 640px 下限防止内容被压扁
   min-height: @hero-min-height;
+  min-height: max(@hero-min-height, calc(100vh - @header-height));
+  min-height: max(@hero-min-height, calc(100svh - @header-height));
   padding: @section-padding-y @section-padding-x 32px;
   overflow: hidden;
   color: @color-text-primary;
@@ -34,28 +38,28 @@
   // 底部再轻轻压暗一层衬托统计数字。
   // 层级：背景图 0 → 遮罩 1 → 内容 2；
   // 注意 ::before 同 z-index 时排在真实子元素（背景图）之前绘制，会被盖住，所以这里必须高一层
-  &::before {
-    position: absolute;
-    inset: 0;
-    z-index: @z-overlay;
-    pointer-events: none;
-    content: '';
-    // 渐变线角度：0deg=向上、90deg=向右、顺时针增大。
-    // 顶部遮罩由 to bottom(180°) 顺时针转 15° → 195deg；底部遮罩由 to top(0°) 顺时针转 15° → 15deg
-    background:
-      linear-gradient(
-        188deg,
-        fade(@color-bg-black, 100%) 0%,
-        fade(@color-bg-black, 35%) 30%,
-        fade(@color-bg-black, 0%) 35%
-      ),
-      linear-gradient(
-        12deg,
-        fade(@color-bg-black, 90%) 10%,
-        fade(@color-bg-black, 35%) 30%,
-        fade(@color-bg-black, 0%) 45%
-      );
-  }
+  // &::before {
+  //   position: absolute;
+  //   inset: 0;
+  //   z-index: @z-overlay;
+  //   pointer-events: none;
+  //   content: '';
+  //   // 渐变线角度：0deg=向上、90deg=向右、顺时针增大。
+  //   // 顶部遮罩由 to bottom(180°) 顺时针转 15° → 195deg；底部遮罩由 to top(0°) 顺时针转 15° → 15deg
+  //   background:
+  //     linear-gradient(
+  //       188deg,
+  //       fade(@color-bg-black, 100%) 0%,
+  //       fade(@color-bg-black, 35%) 30%,
+  //       fade(@color-bg-black, 0%) 35%
+  //     ),
+  //     linear-gradient(
+  //       12deg,
+  //       fade(@color-bg-black, 90%) 10%,
+  //       fade(@color-bg-black, 35%) 30%,
+  //       fade(@color-bg-black, 0%) 45%
+  //     );
+  // }
 
   &__title {
     display: flex;

@@ -45,20 +45,22 @@ const SocialSidebar = () => {
 
   return (
     <div className={`social-sidebar${open ? ' is-open' : ''}`}>
-      {/* 展开列表：grid 0fr→1fr 做高度动画，单项再带透明度和位移动画，依次错峰出现 */}
+      {/* 展开列表：grid 0fr→1fr 做高度动画（被折叠的必须是唯一子节点），单项再带透明度和位移动画，依次错峰出现 */}
       <div className="social-sidebar__list">
-        {socials.map(({ key, icon, url }) => (
-          <button
-            key={key}
-            type="button"
-            className="social-sidebar__item"
-            onClick={() => handleClick(url)}
-            disabled={!url}
-            aria-label={key}
-          >
-            {icon}
-          </button>
-        ))}
+        <div className="social-sidebar__inner">
+          {socials.map(({ key, icon, url }) => (
+            <button
+              key={key}
+              type="button"
+              className="social-sidebar__item"
+              onClick={() => handleClick(url)}
+              disabled={!url}
+              aria-label={key}
+            >
+              {icon}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* 展开/收起按钮：展开时箭头朝下（可收起），收起时箭头朝上（提示还有内容） */}

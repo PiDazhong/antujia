@@ -83,7 +83,6 @@
     top: 50%;
     transform: translateY(-50%);
     white-space: nowrap;
-    font-size: @font-size-xs;
     font-weight: @font-weight-medium;
     letter-spacing: @letter-spacing-wide;
     color: @color-text-muted;
@@ -97,6 +96,18 @@
     html[lang='ar'] & {
       right: 0;
       top: 20px;
+    }
+
+    // 按屏幕宽度动态调整标语字号
+    font-size: 5px;
+    @media (min-width: 400px) {
+      font-size: 6px;
+    }
+    @media (min-width: 430px) {
+      font-size: 7px;
+    }
+    @media (min-width: 460px) {
+      font-size: 8px;
     }
   }
 
