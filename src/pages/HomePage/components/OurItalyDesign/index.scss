@@ -1,5 +1,5 @@
-@import '../../styles/variables.less';
-@import '../../styles/mixins.less';
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
 
 // 深色区块：近黑底，顶部金色小字 + 白色大标题（两行）+ 标题下描述文案 + 通栏团队合影
 // padding 与 whatCanIDoForYou / riyadhManufacturing 一致：水平内边距在区块上
@@ -7,34 +7,33 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: @color-bg-dark; // 近黑底，与上一深色区块连成一片
-  color: @color-text-primary;
+  background-color: $color-bg-dark; // 近黑底，与上一深色区块连成一片
+  color: $color-text-primary;
   padding: 48px 24px 0 24px;
 
-  .respond-mobile({
+  @include respond-mobile {
     padding: 32px 6px 0 6px; 
-  });
-
+}
   &__head {
-    .section-head();
+    @include section-head;
   }
 
   &__eyebrow {
-    .section-eyebrow();
+    @include section-eyebrow;
   }
 
   // 本模块大标题比全局标准（22px）大一号，设计稿为两行白色大标题
   &__title {
-    .section-title();
+    @include section-title;
     max-width: 880px; // 收窄行宽，让标题自然折成两行
-    font-size: @font-size-7xl; // 桌面端 40px
+    font-size: $font-size-7xl; // 桌面端 40px
     line-height: 1.25;
     transform: scale(0.92); // 本文件内单独收窄标题，仅影响当前区块
     transform-origin: center;
 
-    .respond-mobile({
-      font-size: @font-size-4xl; // 移动端 24px
-    });
+    @include respond-mobile {
+      font-size: $font-size-4xl; // 移动端 24px
+}
   }
 
   // 团队图片：单列 grid，宽度跟随容器
@@ -42,7 +41,7 @@
     display: grid;
     grid-template-columns: 1fr;
     width: 100%;
-    max-width: @container-max-width;
+    max-width: $container-max-width;
   }
 
   // 每张图 + 其下方描述的外层容器：图与文字作为一个整体参与 grid 排列
@@ -56,12 +55,12 @@
     position: relative;
     aspect-ratio: 81 / 52;
     overflow: hidden;
-    border-radius: @radius-card;
+    border-radius: $radius-card;
   }
 
   // 用 object-position 选择显示图的纵向区段（移动图而非 img 元素，不会产生空白条）：
   // 0% = 显示图顶部，50% = 居中，100% = 显示图底部；内容偏上就调小，偏下就调大
-  @photo-img-position-y: 50%;
+  $photo-img-position-y: 50%;
 
   &__photo-img {
     position: absolute;
@@ -69,7 +68,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center @photo-img-position-y;
+    object-position: center $photo-img-position-y;
     // 原图纯黑、区块底近黑，两者直接相接会有色差边界；
     // lighten 逐通道取较亮值：图比背景暗的像素透出背景色，纯黑处与底色融为一体
     mix-blend-mode: lighten;
@@ -78,31 +77,31 @@
   // 图下灰色描述：水平居中，字号/粗细同 whatCanIDoForYou 的 __card-label
   &__photo-label {
     margin: 0 auto; // 水平居中
-    font-size: @font-size-md;
-    font-weight: @font-weight-medium;
+    font-size: $font-size-md;
+    font-weight: $font-weight-medium;
     line-height: 1.4;
-    color: @color-text-muted; // 灰字（深底上的次要文字）
+    color: $color-text-muted; // 灰字（深底上的次要文字）
     text-align: center;
 
-    .respond-mobile({
-      font-size: @font-size-base;
-    });
+    @include respond-mobile {
+      font-size: $font-size-base;
+}
   }
 
   // 标题下方描述文案：字号/粗细与大标题（sharkObj[2]）一致
   &__desc {
-    margin: @spacing-2 0 0;
-    font-size: @font-size-7xl; // 桌面端 40px，同 __title
-    font-weight: @font-weight-regular;
+    margin: $spacing-2 0 0;
+    font-size: $font-size-7xl; // 桌面端 40px，同 __title
+    font-weight: $font-weight-regular;
     line-height: 1.3;
     white-space: nowrap; // 保持一行，不写 max-width 避免中途折行
     text-align: center;
     transform: scale(0.92); // 与大标题同字号后单行偏长，整体中心缩放 0.92 倍收窄
     transform-origin: center;
 
-    .respond-mobile({
-      margin-top: @spacing-1;
-      font-size: @font-size-4xl; // 移动端 24px，同 __title
-    });
+    @include respond-mobile {
+      margin-top: $spacing-1;
+      font-size: $font-size-4xl; // 移动端 24px，同 __title
+}
   }
 }

@@ -1,5 +1,5 @@
-@import '../../styles/variables.less';
-@import '../../styles/mixins.less';
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
 
 // 深色区块：近黑底，白色字段标签 + 白色圆角输入框，字段纵向堆叠
 // PC / H5 保持同一布局（单列满宽），仅区块水平内边距按断点收窄
@@ -7,54 +7,53 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: @section-padding-y @section-padding-x;
-  background-color: @color-bg-dark;
-  color: @color-text-primary;
+  padding: $section-padding-y $section-padding-x;
+  background-color: $color-bg-dark;
+  color: $color-text-primary;
 
-  .respond-mobile({
-    padding: @section-padding-y-mobile @section-padding-x-mobile;
-  });
-
+  @include respond-mobile {
+    padding: $section-padding-y-mobile $section-padding-x-mobile;
+}
   // 表单内容限宽居中，字段之间统一 24px 间距
   &__form {
     display: flex;
     flex-direction: column;
-    gap: @spacing-6;
+    gap: $spacing-6;
     width: 100%;
-    max-width: @container-max-width;
+    max-width: $container-max-width;
   }
 
   &__field {
     display: flex;
     flex-direction: column;
-    gap: @spacing-3; // 标签与输入框间距 10px
+    gap: $spacing-3; // 标签与输入框间距 10px
   }
 
   // 字段标签：白色 14px + 宽字距（设计稿为加宽排版）
   &__label {
-    font-size: @font-size-md;
-    font-weight: @font-weight-medium;
-    letter-spacing: @letter-spacing-xwide;
-    color: @color-text-primary;
+    font-size: $font-size-md;
+    font-weight: $font-weight-medium;
+    letter-spacing: $letter-spacing-xwide;
+    color: $color-text-primary;
   }
 
   // 输入框：白底、深字，无边框；最后一个 Your Question 为多行
   &__input {
     width: 100%;
     height: 40px;
-    padding: 0 @spacing-4;
+    padding: 0 $spacing-4;
     border: none;
     outline: none;
     border-radius: 6px;
-    background-color: @color-text-primary;
-    color: @color-text-dark;
-    font-size: @font-size-md;
+    background-color: $color-text-primary;
+    color: $color-text-dark;
+    font-size: $font-size-md;
     box-sizing: border-box;
 
     &--textarea {
       height: auto;
       min-height: 80px;
-      padding: @spacing-3 @spacing-4;
+      padding: $spacing-3 $spacing-4;
       resize: vertical;
     }
   }
@@ -76,19 +75,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: @spacing-2;
+    gap: $spacing-2;
     width: 100%;
-    height: @cta-height;
-    margin-top: @spacing-2;
-    font-size: @font-size-md;
-    font-weight: @font-weight-medium;
-    letter-spacing: @letter-spacing-base;
-    color: @color-text-primary;
-    background: @color-gold-light;
+    height: $cta-height;
+    margin-top: $spacing-2;
+    font-size: $font-size-md;
+    font-weight: $font-weight-medium;
+    letter-spacing: $letter-spacing-base;
+    color: $color-text-primary;
+    background: $color-gold-light;
     border: none;
-    border-radius: @radius-pill;
+    border-radius: $radius-pill;
     cursor: pointer;
-    transition: background-color @duration-fast @easing-default;
+    transition: background-color $duration-fast $easing-default;
 
     &:disabled {
       cursor: default;
@@ -102,14 +101,14 @@
     flex-direction: column;
     gap: 12px;
     width: 100%;
-    max-width: @container-max-width;
-    margin-top: @spacing-8; // 48px
+    max-width: $container-max-width;
+    margin-top: $spacing-8; // 48px
   }
 
   &__feature {
     display: flex;
     align-items: center;
-    gap: @spacing-3; // 10px
+    gap: $spacing-3; // 10px
   }
 
   // 特性图标：原图多为白图，按固定尺寸展示
@@ -123,22 +122,22 @@
   &__feature-texts {
     display: flex;
     flex-direction: column;
-    gap: @spacing-3;
+    gap: $spacing-3;
   }
 
   // 特性标题：白色加宽字距
   &__feature-title {
     margin: 0;
-    font-size: @font-size-md;
-    font-weight: @font-weight-medium;
-    letter-spacing: @letter-spacing-xwide;
-    color: @color-text-primary;
+    font-size: $font-size-md;
+    font-weight: $font-weight-medium;
+    letter-spacing: $letter-spacing-xwide;
+    color: $color-text-primary;
   }
 
   // 特性副标题：弱化灰白
   &__feature-sub {
     margin: 0;
-    font-size: @font-size-base;
-    color: @color-text-muted;
+    font-size: $font-size-base;
+    color: $color-text-muted;
   }
 }

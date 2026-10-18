@@ -1,5 +1,5 @@
 import useSharkText from '../../hooks/useSharkText';
-import './index.less';
+import './index.scss';
 
 const OurCapabilities = () => {
   // ourcapabilities 模块文本：

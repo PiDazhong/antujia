@@ -2,7 +2,7 @@ import useSharkText from '../../hooks/useSharkText';
 import useImage from '../../hooks/useImage';
 import { useLang } from '../../../../context/LanguageContext';
 import { FILE_BASE_URL } from '../../../../config/uploadModules';
-import './index.less';
+import './index.scss';
 
 const OurItalyDesign = () => {
   // ouritalydesign 模块文本：

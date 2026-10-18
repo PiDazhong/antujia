@@ -1,4 +1,4 @@
-@import '../../styles/variables.less';
+@import '../../styles/variables.scss';
 
 // 背景大图已接入（heroImage 模块 sort=1 的图片条目）
 .hero-image {
@@ -9,12 +9,12 @@
   width: 100%;
   // 首屏撑满：hero 高度 = 视口高度 - 顶部 header(56px)；
   // svh 为移动端动态视口单位（兼容浏览器工具栏伸缩），并保留 640px 下限防止内容被压扁
-  min-height: @hero-min-height;
-  min-height: max(@hero-min-height, calc(100vh - @header-height));
-  min-height: max(@hero-min-height, calc(100svh - @header-height));
-  padding: @section-padding-y @section-padding-x 32px;
+  min-height: $hero-min-height;
+  min-height: max($hero-min-height, calc(100vh - $header-height));
+  min-height: max($hero-min-height, calc(100svh - $header-height));
+  padding: $section-padding-y $section-padding-x 32px;
   overflow: hidden;
-  color: @color-text-primary;
+  color: $color-text-primary;
 
   // 整版背景图：铺满模块，垫在遮罩层下面
   // 选择器须带父级：下面 > * 会重设直接子元素的 position/z-index，单写 &__bg 优先级不够
@@ -22,7 +22,7 @@
     position: absolute;
     top: 0;
     inset-inline-start: 0;
-    z-index: @z-bg;
+    z-index: $z-bg;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -31,7 +31,7 @@
   // 内容浮在遮罩层之上
   > * {
     position: relative;
-    z-index: @z-content;
+    z-index: $z-content;
   }
 
   // 整版渐变遮罩：顶部压暗保证标题/按钮可读，向下渐隐露出图片；
@@ -41,7 +41,7 @@
   // &::before {
   //   position: absolute;
   //   inset: 0;
-  //   z-index: @z-overlay;
+  //   z-index: $z-overlay;
   //   pointer-events: none;
   //   content: '';
   //   // 渐变线角度：0deg=向上、90deg=向右、顺时针增大。
@@ -49,15 +49,15 @@
   //   background:
   //     linear-gradient(
   //       188deg,
-  //       fade(@color-bg-black, 100%) 0%,
-  //       fade(@color-bg-black, 35%) 30%,
-  //       fade(@color-bg-black, 0%) 35%
+  //       rgba($color-bg-black, 1) 0%,
+  //       rgba($color-bg-black, 0.35) 30%,
+  //       rgba($color-bg-black, 0) 35%
   //     ),
   //     linear-gradient(
   //       12deg,
-  //       fade(@color-bg-black, 90%) 10%,
-  //       fade(@color-bg-black, 35%) 30%,
-  //       fade(@color-bg-black, 0%) 45%
+  //       rgba($color-bg-black, 0.9) 10%,
+  //       rgba($color-bg-black, 0.35) 30%,
+  //       rgba($color-bg-black, 0) 45%
   //     );
   // }
 
@@ -65,23 +65,23 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: @spacing-4;
-    margin: -24px 0 @spacing-8;
-    font-weight: @font-weight-medium;
+    gap: $spacing-4;
+    margin: -24px 0 $spacing-8;
+    font-weight: $font-weight-medium;
     text-align: center;
   }
 
   &__title-line {
-    font-size: @font-size-6xl;
+    font-size: $font-size-6xl;
     line-height: 1.3;
     white-space: nowrap;
 
     &--white {
-      color: @color-text-primary;
+      color: $color-text-primary;
     }
 
     &--gold {
-      color: @color-gold;
+      color: $color-gold;
     }
   }
 
@@ -92,17 +92,17 @@
     justify-content: flex-start;
     gap: 8px;
     width: min(600px, 100%);
-    height: @cta-height;
+    height: $cta-height;
     padding: 0 12px;
     margin-bottom: auto;
-    font-size: @font-size-md;
-    font-weight: @font-weight-medium;
-    color: @color-text-primary;
-    background: @color-gold-light;
+    font-size: $font-size-md;
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+    background: $color-gold-light;
     border: none;
-    border-radius: @radius-pill;
+    border-radius: $radius-pill;
     cursor: pointer;
-    transition: background-color @duration-fast @easing-default;
+    transition: background-color $duration-fast $easing-default;
 
     // 码表未配置 whatsapp 链接时禁用点击，外观保持不变
     &:disabled {
@@ -121,7 +121,7 @@
   &__stats {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: @spacing-6 @spacing-7;
+    gap: $spacing-6 $spacing-7;
     width: 100%;
     margin-top: 320px;
   }
@@ -133,7 +133,7 @@
     flex-direction: column;
     justify-self: start;
     width: max-content;
-    gap: @spacing-2;
+    gap: $spacing-2;
     text-align: start;
   }
 
@@ -146,44 +146,44 @@
     width: 100%;
     direction: ltr;
     // 数字统一字号，基础字体栈；细字重
-    font-family: @font-family-base;
-    font-size: @font-size-7xl;
-    font-weight: @font-weight-light;
+    font-family: $font-family-base;
+    font-size: $font-size-7xl;
+    font-weight: $font-weight-light;
     line-height: 1;
-    color: @color-gold;
+    color: $color-gold;
     text-align: start;
     white-space: nowrap;
   }
 
   // 数字值中的字母单位（如 2BILLION+ 里的 BILLION）：小号字、与数字底部对齐
   &__stat-unit {
-    font-size: @font-size-3xl;
-    font-weight: @font-weight-light;
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-light;
   }
 
   &__stat-label {
     display: block;
     width: 100%;
-    font-size: @font-size-base;
-    font-weight: @font-weight-regular;
-    letter-spacing: @letter-spacing-stat;
-    color: @color-text-soft;
+    font-size: $font-size-base;
+    font-weight: $font-weight-regular;
+    letter-spacing: $letter-spacing-stat;
+    color: $color-text-soft;
     text-align: start;
     white-space: nowrap;
   }
 }
 
-@media (max-width: @breakpoint-mobile) {
+@media (max-width: $breakpoint-mobile) {
   .hero-image {
-    padding: @section-padding-y-mobile @section-padding-x-mobile 24px;
+    padding: $section-padding-y-mobile $section-padding-x-mobile 24px;
 
     &__title-line {
-      font-size: @font-size-4xl;
+      font-size: $font-size-4xl;
     }
 
     &__stats {
       margin-top: 200px;
-      gap: @spacing-5 @spacing-4;
+      gap: $spacing-5 $spacing-4;
     }
 
     &__stat {
@@ -191,16 +191,16 @@
     }
 
     &__stat-value {
-      font-size: @font-size-5xl;
+      font-size: $font-size-5xl;
     }
 
     &__stat-unit {
-      font-size: @font-size-lg;
+      font-size: $font-size-lg;
     }
 
     &__stat-label {
-      font-size: @font-size-sm;
-      letter-spacing: @letter-spacing-xwide;
+      font-size: $font-size-sm;
+      letter-spacing: $letter-spacing-xwide;
     }
   }
 }

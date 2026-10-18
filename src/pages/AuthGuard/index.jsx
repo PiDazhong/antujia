@@ -4,7 +4,7 @@ import { LockOutlined } from '@ant-design/icons';
 import AdminPage from '../AdminPage';
 import { API_BASE_URL, API_ENDPOINTS } from '../../config/uploadModules';
 import { getToken, setToken } from '../../utils/authFetch';
-import './index.less';
+import './index.scss';
 
 const AuthGuard = () => {
   const [authenticated, setAuthenticated] = useState(() => !!getToken());

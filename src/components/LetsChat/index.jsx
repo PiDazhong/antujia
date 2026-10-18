@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from '../../hooks/useTranslation';
 import { API_BASE_URL } from '../../config/uploadModules';
-import './index.less';
+import './index.scss';
 
 const WhatsAppIcon = () => (
   <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">

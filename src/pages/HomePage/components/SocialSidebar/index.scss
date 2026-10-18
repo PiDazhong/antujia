@@ -1,16 +1,16 @@
-@import '../../styles/variables.less';
+@import '../../styles/variables.scss';
 
 // 左侧悬浮社交栏：物理固定在屏幕最左侧、垂直居中，竖排
 // 位置用 left/right 物理属性（非逻辑属性）：需求指定钉死在左缘，RTL 下也不镜像
 .social-sidebar {
   position: fixed;
   top: 50%;
-  left: @spacing-6;
-  z-index: @z-header;
+  left: $spacing-6;
+  z-index: $z-header;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: @spacing-2;
+  gap: $spacing-2;
   transform: translateY(-50%);
 
   &__list {
@@ -21,7 +21,7 @@
     grid-template-rows: 0fr;
     // 收起（回到默认态）：按钮先快速淡出（见 __item），高度延迟 0.15s 再折叠，
     // 保证高度动画期间按钮已不可见，避免被 overflow 裁剪出压扁/变窄的观感
-    transition: grid-template-rows @duration-base @easing-default 0.15s;
+    transition: grid-template-rows $duration-base $easing-default 0.15s;
 
     .is-open & {
       grid-template-rows: 1fr;
@@ -34,7 +34,7 @@
   &__inner {
     display: flex;
     flex-direction: column;
-    gap: @spacing-2;
+    gap: $spacing-2;
     min-height: 0;
     overflow: hidden;
   }
@@ -46,22 +46,22 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    font-size: @font-size-xl;
-    color: @color-text-primary;
+    font-size: $font-size-xl;
+    color: $color-text-primary;
     cursor: pointer;
-    background: fade(@color-bg-black, 55%);
+    background: rgba($color-bg-black, 0.55);
     border: none;
-    border-radius: @radius-dot;
+    border-radius: $radius-dot;
     opacity: 0;
     transform: translateY(8px);
     // 收起（回到默认态）：快速同步淡出，不带错峰、不等待
     transition:
-      opacity 0.15s @easing-default,
-      transform 0.15s @easing-default,
-      background-color @duration-fast @easing-default;
+      opacity 0.15s $easing-default,
+      transform 0.15s $easing-default,
+      background-color $duration-fast $easing-default;
 
     &:hover {
-      background: @color-gold;
+      background: $color-gold;
     }
 
     // 码表未配置对应链接时禁用点击，外观保持不变
@@ -69,7 +69,7 @@
       cursor: default;
 
       &:hover {
-        background: fade(@color-bg-black, 55%);
+        background: rgba($color-bg-black, 0.55);
       }
     }
 
@@ -80,9 +80,9 @@
       opacity: 1;
       transform: translateY(0);
       transition:
-        opacity @duration-base @easing-default,
-        transform @duration-base @easing-default,
-        background-color @duration-fast @easing-default;
+        opacity $duration-base $easing-default,
+        transform $duration-base $easing-default,
+        background-color $duration-fast $easing-default;
 
       &:nth-child(1) {
         transition-delay: 0.2s, 0.2s, 0s;
@@ -108,22 +108,22 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    font-size: @font-size-md;
-    color: @color-text-primary;
+    font-size: $font-size-md;
+    color: $color-text-primary;
     cursor: pointer;
-    background: @color-gold;
+    background: $color-gold;
     border: none;
-    border-radius: @radius-dot;
-    transition: background-color @duration-fast @easing-default;
+    border-radius: $radius-dot;
+    transition: background-color $duration-fast $easing-default;
 
     &:hover {
-      background: fade(@color-gold, 85%);
+      background: rgba($color-gold, 0.85);
     }
   }
 
   // 箭头：展开（可收起）朝下，收起（提示有内容）朝上并配合弹性缩放，形成明确的反馈
   &__toggle-icon {
-    transition: transform @duration-base @easing-default;
+    transition: transform $duration-base $easing-default;
 
     .social-sidebar:not(.is-open) & {
       transform: rotate(180deg);
@@ -131,8 +131,8 @@
   }
 }
 
-@media (max-width: @breakpoint-mobile) {
+@media (max-width: $breakpoint-mobile) {
   .social-sidebar {
-    left: @spacing-4;
+    left: $spacing-4;
   }
 }

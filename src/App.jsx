@@ -9,7 +9,7 @@ import PrivacyPage from './pages/PrivacyPage';
 import { useLang } from './context/LanguageContext';
 import { HomeDataProvider } from './pages/HomePage/context/HomeDataContext';
 import { writeLog } from './utils/log';
-import './App.less';
+import './App.scss';
 
 function App() {
   const { lang } = useLang();

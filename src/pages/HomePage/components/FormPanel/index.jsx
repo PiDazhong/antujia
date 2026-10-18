@@ -7,7 +7,7 @@ import useCodeTable from '../../hooks/useCodeTable';
 import { useLang } from '../../../../context/LanguageContext';
 import { FILE_BASE_URL } from '../../../../config/uploadModules';
 import { writeLog, sendMail } from '../../../../utils/log';
-import './index.less';
+import './index.scss';
 
 // 提交限流：同一浏览器 10 秒内只允许提交一次
 const RATE_LIMIT_KEY = 'contact_form_last_submit';

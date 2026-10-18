@@ -4,7 +4,7 @@ import useImage from '../../hooks/useImage';
 import useCodeTable from '../../hooks/useCodeTable';
 import { FILE_BASE_URL } from '../../../../config/uploadModules';
 import { toAbsoluteUrl } from '../../../../utils/url';
-import './index.less';
+import './index.scss';
 
 // 把数字值拆成「数字+符号」和「字母单位」两类片段：
 // "15+" → ["15+"]；"2BILLION+" → ["2", "BILLION", "+"]（字母部分渲染为小号字）

@@ -7,7 +7,7 @@ import {
 } from '@ant-design/icons';
 import useCodeTable from '../../hooks/useCodeTable';
 import { toAbsoluteUrl } from '../../../../utils/url';
-import './index.less';
+import './index.scss';
 
 // antd 图标库没有 TikTok，这里内联官方 logo 路径，样式与 antd 的 Filled 系列对齐
 const TikTokIcon = (props) => (

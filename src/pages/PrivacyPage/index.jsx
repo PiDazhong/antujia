@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { API_BASE_URL, API_ENDPOINTS } from '../../config/uploadModules';
 import { useLang } from '../../context/LanguageContext';
-import './index.less';
+import './index.scss';
 
 // privacypolicy 模块文本（shark.json，与后台管理端对应）：
 // [1] 页面标题 [2] 引言

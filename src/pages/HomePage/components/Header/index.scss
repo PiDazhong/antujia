@@ -1,22 +1,22 @@
-@import '../../styles/variables.less';
+@import '../../styles/variables.scss';
 
 .home-header {
   position: sticky;
   top: 0;
-  z-index: @z-header;
+  z-index: $z-header;
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: @header-height;
-  padding: 0 @section-padding-x;
-  background-color: @color-bg-dark;
-  color: @color-text-primary;
+  height: $header-height;
+  padding: 0 $section-padding-x;
+  background-color: $color-bg-dark;
+  color: $color-text-primary;
 
   &__brand {
     display: flex;
     align-items: center;
-    gap: @spacing-3;
+    gap: $spacing-3;
     cursor: pointer;
   }
 
@@ -35,13 +35,13 @@
     display: grid;
     grid-template-columns: repeat(2, 9px);
     grid-template-rows: repeat(2, 9px);
-    gap: @spacing-1;
+    gap: $spacing-1;
 
     i {
       width: 9px;
       height: 9px;
-      border: 2px solid @color-text-primary;
-      border-radius: @radius-dot;
+      border: 2px solid $color-text-primary;
+      border-radius: $radius-dot;
     }
   }
 
@@ -53,9 +53,9 @@
   }
 
   &__name {
-    font-size: @font-size-2xl;
-    font-weight: @font-weight-bold;
-    letter-spacing: @letter-spacing-tight;
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    letter-spacing: $letter-spacing-tight;
     white-space: nowrap;
   }
 
@@ -84,9 +84,9 @@
     // 注意：不能只写 translateY(-50%)，scale 必须合并在同一个 transform 里
     transform: translateY(-50%) scale(var(--slogan-scale, 0.417));
     white-space: nowrap;
-    font-weight: @font-weight-medium;
-    letter-spacing: @letter-spacing-wide;
-    color: @color-text-muted;
+    font-weight: $font-weight-medium;
+    letter-spacing: $letter-spacing-wide;
+    color: $color-text-muted;
 
     // lang=en 时距左 40px，lang=ar 时距右 40px
     html[lang='en'] & {
@@ -122,30 +122,30 @@
   &__actions {
     display: flex;
     align-items: center;
-    gap: @spacing-5;
+    gap: $spacing-5;
   }
 
   // 语言切换胶囊：点击循环切换 zh → en → ar
   &__lang {
-    height: @lang-height;
+    height: $lang-height;
     padding: 0 18px;
-    font-size: @font-size-base;
-    font-weight: @font-weight-light;
-    letter-spacing: @letter-spacing-base;
-    color: @color-text-primary;
+    font-size: $font-size-base;
+    font-weight: $font-weight-light;
+    letter-spacing: $letter-spacing-base;
+    color: $color-text-primary;
     background: transparent;
     // 偏方型的圆角 + 上下细、左右微粗的描边
-    border: 1px solid @color-white-85-border;
+    border: 1px solid $color-white-85-border;
     border-top-width: 0.5px;
     border-bottom-width: 0.5px;
     border-left-width: 1.5px;
     border-right-width: 1.5px;
-    border-radius: @radius-lang;
+    border-radius: $radius-lang;
     cursor: pointer;
-    transition: background-color @duration-fast @easing-default;
+    transition: background-color $duration-fast $easing-default;
 
     &:hover {
-      background-color: @color-white-12;
+      background-color: $color-white-12;
     }
   }
 
@@ -154,7 +154,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: @spacing-2;
+    gap: $spacing-2;
     width: 22px;
     height: 30px;
     padding: 0;
@@ -167,13 +167,13 @@
       width: 100%;
       height: 1px;
       border-radius: 2px;
-      background-color: @color-text-primary;
+      background-color: $color-text-primary;
     }
   }
 }
 
-@media (max-width: @breakpoint-mobile) {
+@media (max-width: $breakpoint-mobile) {
   .home-header {
-    padding: 0 @section-padding-x-mobile;
+    padding: 0 $section-padding-x-mobile;
   }
 }

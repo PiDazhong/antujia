@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import useSharkText from '../../hooks/useSharkText';
-import './index.less';
+import './index.scss';
 
 const STORAGE_KEY = 'saudi_damons_cookie_consent';
 

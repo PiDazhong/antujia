@@ -4,7 +4,7 @@ import useImage from '../../hooks/useImage';
 import { useLang } from '../../../../context/LanguageContext';
 import { FILE_BASE_URL } from '../../../../config/uploadModules';
 import CookieBanner from '../CookieBanner';
-import './index.less';
+import './index.scss';
 
 // 语言循环顺序：点击胶囊按钮切换到下一个语言
 const LANG_ORDER = ['en', 'ar'];

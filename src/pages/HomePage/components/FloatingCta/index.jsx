@@ -2,7 +2,7 @@ import useImage from '../../hooks/useImage';
 import useCodeTable from '../../hooks/useCodeTable';
 import { FILE_BASE_URL } from '../../../../config/uploadModules';
 import { toAbsoluteUrl } from '../../../../utils/url';
-import './index.less';
+import './index.scss';
 
 // 右侧悬浮 CTA：固定在屏幕最右侧、垂直居中
 // 展示 heroImage 模块 sort=2 的图片，点击行为与 HeroImage 的 WhatsApp 按钮一致

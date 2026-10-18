@@ -1,5 +1,5 @@
-@import '../../styles/variables.less';
-@import '../../styles/mixins.less';
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
 
 // 深色区块：近黑底，顶部金色小字 + 白色大标题（Quality control）
 // 内容自上而下：实验室主图 → 三连图 → 认证 logo 白底图，每组图下方一行灰色居中描述
@@ -9,47 +9,46 @@
   flex-direction: column;
   align-items: center;
   padding: 48px 24px 48px 24px; // 顶部 32px 与上一深色区块连成一片；底部 48px 收边
-  background-color: @color-bg-dark;
-  color: @color-text-primary;
+  background-color: $color-bg-dark;
+  color: $color-text-primary;
 
-  .respond-mobile({
+  @include respond-mobile {
     padding: 32px 24px 32px 24px; // 移动端水平 16px、底部 40px
-  });
-
+}
   &__head {
-    .section-head();
+    @include section-head;
   }
 
   // 顶部居中小文案（金色 eyebrow，同兄弟区块）
   &__eyebrow {
-    .section-eyebrow();
+    @include section-eyebrow;
   }
 
   // 本模块大标题比全局标准（22px）大一号，设计稿为白色单行大标题
   &__title {
-    .section-title();
-    font-size: @font-size-7xl; // 桌面端 40px
+    @include section-title;
+    font-size: $font-size-7xl; // 桌面端 40px
     line-height: 1.25;
 
-    .respond-mobile({
-      font-size: @font-size-4xl; // 移动端 24px
-    });
+    @include respond-mobile {
+      font-size: $font-size-4xl; // 移动端 24px
+}
   }
 
   // 每组「图 + 描述」的外层容器：组与组之间 32px 间距（移动端 24px），内容限宽居中
   &__block {
     display: flex;
     flex-direction: column;
-    gap: @spacing-4; // 图与描述间距 16px
+    gap: $spacing-4; // 图与描述间距 16px
     width: 100%;
-    max-width: @container-max-width;
+    max-width: $container-max-width;
 
     & + & {
-      margin-top: @spacing-7; // 32px
+      margin-top: $spacing-7; // 32px
 
-      .respond-mobile({
+      @include respond-mobile {
         margin-top: 24px;
-      });
+}
     }
   }
 
@@ -84,12 +83,12 @@
   // 认证 logo 白底卡片：白底、直角，图按原始比例完整展示不裁切
   &__cert-card {
     width: 100%;
-    padding: @spacing-7 @spacing-8; // 桌面端白底四边内边距 32px / 48px
-    background-color: @color-text-primary; // 白底
+    padding: $spacing-7 $spacing-8; // 桌面端白底四边内边距 32px / 48px
+    background-color: $color-text-primary; // 白底
 
-    .respond-mobile({
+    @include respond-mobile {
       padding: 24px 16px; // 移动端收窄
-    });
+}
   }
 
   &__cert-img {
@@ -101,14 +100,14 @@
   // 图下灰色描述：靠右对齐，字号/粗细同 ourItalyDesign 的 __photo-label
   &__label {
     margin: 0;
-    font-size: @font-size-lg;
-    font-weight: @font-weight-medium;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
     line-height: 1.4;
-    color: @color-text-muted; // 灰字（深底上的次要文字）
+    color: $color-text-muted; // 灰字（深底上的次要文字）
     text-align: right;
 
-    .respond-mobile({
-      font-size: @font-size-md;
-    });
+    @include respond-mobile {
+      font-size: $font-size-md;
+}
   }
 }

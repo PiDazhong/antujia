@@ -1,5 +1,5 @@
-@import '../../styles/variables.less';
-@import '../../styles/mixins.less';
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
 
 // 浅色区块：白底 + 黑字，顶部小字 + 大标题 + 2 列竖版圆角项目卡片
 // 与 whatCanIDoForYou（米白底、标签居中）错开：本模块白底、标签在图片左下角
@@ -7,25 +7,24 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: @color-text-primary; // 纯白底，与上一区块米白底形成节奏对比
-  color: @color-text-dark;
+  background-color: $color-text-primary; // 纯白底，与上一区块米白底形成节奏对比
+  color: $color-text-dark;
   padding: 48px 24px 32px;
 
-  .respond-mobile({
+  @include respond-mobile {
     padding: 32px 24px; 
-  });
-
+}
   &__head {
-    .section-head();
+    @include section-head;
     margin-bottom: 24px; // 本模块内容紧跟标题，比全局标准（48px）紧凑
   }
 
   &__eyebrow {
-    .section-eyebrow();
+    @include section-eyebrow;
   }
 
   &__title {
-    .section-title();
+    @include section-title;
   }
 
   &__grid {
@@ -33,7 +32,7 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 60px; // 卡片间距：桌面端 60px，移动端 30px
     width: 100%;
-    max-width: @container-max-width;
+    max-width: $container-max-width;
     padding-right: 40px;
     padding-left: 40px;
   }
@@ -46,13 +45,13 @@
     align-items: flex-start;
     aspect-ratio: 7 / 10;
     overflow: hidden;
-    background-color: @color-bg-card;
-    border-radius: @radius-card;
+    background-color: $color-bg-card;
+    border-radius: $radius-card;
   }
 
   // 后台图为 1080×1960 竖图、元素在正中间（原图比卡片 7:10 更修长，cover 会先裁掉上下）：
   // scale(N) = 显示中心 1/N 宽的区域（scale(2.8) → 中心约 386×700），按需调大缩小
-  @card-img-zoom: 2.8;
+  $card-img-zoom: 2.8;
 
   &__card-img {
     position: absolute;
@@ -60,7 +59,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scale(@card-img-zoom);
+    transform: scale($card-img-zoom);
     transform-origin: center;
   }
 
@@ -77,17 +76,17 @@
   &__card-label {
     position: relative;
     z-index: 1;
-    margin: auto auto @spacing-5 @spacing-5; // 顶部 auto 推到底部，左侧内缩 20px
-    font-size: @font-size-lg;
-    font-weight: @font-weight-medium;
+    margin: auto auto $spacing-5 $spacing-5; // 顶部 auto 推到底部，左侧内缩 20px
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
     line-height: 1.4;
     white-space: nowrap;
-    color: @color-text-primary;
+    color: $color-text-primary;
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
   }
 }
 
-@media (max-width: @breakpoint-mobile) {
+@media (max-width: $breakpoint-mobile) {
   .full-home-solutions {
     &__head {
       margin-bottom: 24px; // mixin 的移动端覆盖（32px）需在此压回 24px
@@ -100,8 +99,8 @@
     }
 
     &__card-label {
-      margin: auto auto @spacing-4 @spacing-4;
-      font-size: @font-size-md;
+      margin: auto auto $spacing-4 $spacing-4;
+      font-size: $font-size-md;
     }
   }
 }

@@ -5,7 +5,7 @@ import {
   MailFilled,
 } from '@ant-design/icons';
 import useSharkText from '../../hooks/useSharkText';
-import './index.less';
+import './index.scss';
 
 // 联系信息行图标：填充系（Filled）antd 原生图标，按行顺序依次为 营业时间/地址/电话/邮箱
 const CONTACT_ICONS = [

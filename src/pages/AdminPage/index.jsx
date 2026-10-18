@@ -5,7 +5,7 @@ import TextManager from './components/TextManager';
 import CodeTableManager from './components/CodeTableManager';
 import PasswordManager from './components/PasswordManager';
 import AnalysisManager from './components/AnalysisManager';
-import './index.less';
+import './index.scss';
 
 const AdminPage = () => {
   // 顶部吸顶 Tabs 需要避让 sticky 的站点头部，动态测量头部高度
