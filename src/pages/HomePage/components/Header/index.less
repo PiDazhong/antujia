@@ -81,7 +81,8 @@
   &__slogan {
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
+    // 注意：不能只写 translateY(-50%)，scale 必须合并在同一个 transform 里
+    transform: translateY(-50%) scale(var(--slogan-scale, 0.417));
     white-space: nowrap;
     font-weight: @font-weight-medium;
     letter-spacing: @letter-spacing-wide;
@@ -91,23 +92,30 @@
     html[lang='en'] & {
       left: 2px;
       top: 20px;
+      // 以定位侧为缩放原点，避免缩放后视觉位置偏移
+      transform-origin: left center;
     }
 
     html[lang='ar'] & {
       right: 0;
       top: 20px;
+      transform-origin: right center;
     }
 
-    // 按屏幕宽度动态调整标语字号
-    font-size: 5px;
+    // 部分安卓浏览器（中文 locale Chrome、微信/UC WebView）有最小字号限制，
+    // 直接用 5~8px 会被钳制成同一大小，媒体查询看起来“不生效”。
+    // 改用 12px 基准字号 + transform: scale()，缩放不受最小字号限制。
+    // 视觉效果：12px × scale = 5 / 6 / 7 / 8px
+    font-size: 12px;
+    --slogan-scale: 0.417;
     @media (min-width: 400px) {
-      font-size: 6px;
+      --slogan-scale: 0.5;
     }
     @media (min-width: 430px) {
-      font-size: 7px;
+      --slogan-scale: 0.583;
     }
     @media (min-width: 460px) {
-      font-size: 8px;
+      --slogan-scale: 0.667;
     }
   }
 
