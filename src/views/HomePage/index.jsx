@@ -1,3 +1,5 @@
+'use client';
+
 import Header from './components/Header';
 import HeroImage from './components/HeroImage';
 import WhatCanIDoForYou from './components/WhatCanIDoForYou';

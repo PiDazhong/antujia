@@ -6,11 +6,15 @@
 
 const TOKEN_KEY = 'auth_token';
 
-export const getToken = () => sessionStorage.getItem(TOKEN_KEY);
+// SSR 环境下 sessionStorage 不存在，统一判空兜底（Next 服务端渲染管理页时会执行到）
+const storage = () =>
+  typeof sessionStorage !== 'undefined' ? sessionStorage : null;
 
-export const setToken = (token) => sessionStorage.setItem(TOKEN_KEY, token);
+export const getToken = () => storage()?.getItem(TOKEN_KEY) ?? null;
 
-export const clearToken = () => sessionStorage.removeItem(TOKEN_KEY);
+export const setToken = (token) => storage()?.setItem(TOKEN_KEY, token);
+
+export const clearToken = () => storage()?.removeItem(TOKEN_KEY);
 
 /**
  * 管理端请求封装：自动携带 Bearer token、JSON 序列化 body（FormData 除外）

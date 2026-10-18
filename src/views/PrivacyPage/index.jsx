@@ -1,35 +1,15 @@
-import { useState, useEffect } from 'react';
-import { API_BASE_URL, API_ENDPOINTS } from '../../config/uploadModules';
-import { useLang } from '../../context/LanguageContext';
+'use client';
+
+import useSharkText from '../HomePage/hooks/useSharkText';
 import './index.scss';
 
-// privacypolicy 模块文本（shark.json，与后台管理端对应）：
+// privacypolicy 模块文本（shark.json，与后台管理端对应），SSR 阶段已随页面预取：
 // [1] 页面标题 [2] 引言
 // [3]/[4] 信息收集 标题/正文 [5]/[6] 信息使用 [7]/[8] 信息共享
 // [9]/[10] 数据安全 [11]/[12] 用户权利
 // [13] 联系我们标题 [14] 联系我们正文 [15] 邮箱标签 [16] 电话标签 [17] 地址标签 [18] 地址内容
 const PrivacyPage = () => {
-  const { lang } = useLang();
-  const [sharkObj, setSharkObj] = useState({});
-
-  useEffect(() => {
-    fetch(`${API_BASE_URL}${API_ENDPOINTS.sharkQuery()}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ moduleName: 'privacypolicy' }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && data.code === 1 && Array.isArray(data.data)) {
-          const map = {};
-          data.data.forEach((item) => {
-            map[item.sharkKey] = item.sharkText?.[lang];
-          });
-          setSharkObj(map);
-        }
-      })
-      .catch(() => {});
-  }, [lang]);
+  const sharkObj = useSharkText({ module: 'privacypolicy' });
 
   const sections = [
     { key: 'collection', title: sharkObj[3], text: sharkObj[4] },

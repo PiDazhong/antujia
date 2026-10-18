@@ -1,5 +1,7 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import useSharkText from '../../hooks/useSharkText';
 import './index.scss';
 
@@ -30,7 +32,7 @@ const CookieBanner = () => {
       <div className="cookie-banner-content">
         <p className="cookie-banner-text">
           {sharkObj[3]}{' '}
-          <Link to="/privacy" className="cookie-banner-link">
+          <Link href="/privacy" className="cookie-banner-link">
             {sharkObj[4]}
           </Link>
         </p>

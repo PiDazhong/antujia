@@ -3,15 +3,14 @@
  * 用户可在此修改子文件夹名和 API 端点
  */
 
-// 开发环境连本地后端，生产环境走当前域名（相对路径）
-export const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:3001' : '';
+// 浏览器侧请求基地址：统一走相对路径（dev 由 next.config rewrites 代理到后端，生产由 nginx 代理）
+// 如确需指向其他域名，可设置 NEXT_PUBLIC_API_BASE_URL
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 // 图片基础地址：
-// - 开发环境：本地 node 服务通过 /damonshome 静态目录提供（http://localhost:3001/damonshome）
+// - 开发环境：next.config rewrites 将 /damonshome/ 代理到本地 node 服务（http://localhost:3001/damonshome）
 // - 生产环境：nginx 将 /damonshome/ 指向服务器图片目录（/damonshome/<模块>/<文件名>）
-export const FILE_BASE_URL = import.meta.env.DEV
-  ? 'http://localhost:3001/damonshome'
-  : '/damonshome';
+export const FILE_BASE_URL = process.env.NEXT_PUBLIC_FILE_BASE_URL || '/damonshome';
 
 
 // API 端点配置

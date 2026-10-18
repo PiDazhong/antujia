@@ -1,4 +1,6 @@
-import { useNavigate } from 'react-router-dom';
+'use client';
+
+import { useRouter } from 'next/navigation';
 import useSharkText from '../../hooks/useSharkText';
 import useImage from '../../hooks/useImage';
 import { useLang } from '../../../../context/LanguageContext';
@@ -12,7 +14,7 @@ const LANG_ORDER = ['en', 'ar'];
 const FALLBACK_LABELS = { zh: '中文', en: 'EN', ar: 'AR' };
 
 const Header = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { lang, setLang } = useLang();
   // header 模块文本：sharkObj[1] = 字标下标语，sharkObj[2] = 语言按钮文案
   const sharkObj = useSharkText({ module: 'header' });
@@ -30,7 +32,7 @@ const Header = () => {
     <>
       <header className="home-header">
         {/* 左侧：品牌图标 + 品牌字标（优先取接口图片，未配置时用本地兜底），点击回到主路由 */}
-        <div className="home-header__brand" onClick={() => navigate('/')}>
+        <div className="home-header__brand" onClick={() => router.push('/')}>
           <img className="home-header__brand-img" src={brandImg} alt="" />
           <span className="home-header__wordmark">
             <img className="home-header__name-img" src={nameImg} alt="" />

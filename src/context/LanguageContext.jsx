@@ -1,5 +1,7 @@
+'use client';
+
 import { createContext, useContext, useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { usePathname } from 'next/navigation';
 
 const LanguageContext = createContext({
   lang: 'en',
@@ -8,17 +10,17 @@ const LanguageContext = createContext({
 
 export const LanguageProvider = ({ children }) => {
   const [lang, setLang] = useState('ar');
-  const location = useLocation();
+  const pathname = usePathname();
 
   useEffect(() => {
     const excluded = ['/manage'];
-    if (excluded.includes(location.pathname)) {
+    if (excluded.includes(pathname)) {
       document.documentElement.dir = 'ltr';
     } else {
       document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     }
     document.documentElement.lang = lang;
-  }, [lang, location.pathname]);
+  }, [lang, pathname]);
 
   return (
     <LanguageContext.Provider value={{ lang, setLang }}>

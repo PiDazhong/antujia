@@ -1,11 +1,13 @@
+'use client';
+
 import { createContext, useContext, useCallback, useRef, useState } from 'react';
 import { API_BASE_URL, API_ENDPOINTS } from '../../../config/uploadModules';
+import { toSharkMap, toImageMap, toCodeTableMap } from '../../../lib/dataMaps';
 
 /**
- * 首页数据上下文（懒加载版）
- * 不再挂载时全量预载所有模块，改为按模块名懒加载 + 缓存：
- * 哪个组件渲染了哪个模块，才请求哪个模块的数据（shark + image），
- * 隐私页只用 Header 时只会请求 header 一个模块
+ * 首页数据上下文（SSR 预取 + 懒加载兜底）
+ * - SSR：page.jsx 服务端取数后通过 initialData 注入，客户端直接用、不重拉
+ * - 兜底：未预取的模块仍走 ensureModule/ensureCodeTable 懒加载（去重防重复请求）
  * value 结构：
  *   modules: { [moduleName]: { shark: { [sharkKey]: sharkText }, image: { [fileId]: item } } }
  *     - shark：以 sharkKey 为键，值为多语言对象 { zh, en, ar }
@@ -34,33 +36,15 @@ const post = async (endpoint, body) => {
   return data.data ?? [];
 };
 
-// 文本条目数组 → { [sharkKey]: sharkText }
-const toSharkMap = (list) =>
-  (Array.isArray(list) ? list : []).reduce((acc, item) => {
-    if (item?.sharkKey) acc[item.sharkKey] = item.sharkText ?? {};
-    return acc;
-  }, {});
-
-// 图片条目数组 → { [fileId]: item }（string 键保留插入顺序）
-const toImageMap = (list) =>
-  (Array.isArray(list) ? list : []).reduce((acc, item) => {
-    if (item?.fileId) acc[item.fileId] = item;
-    return acc;
-  }, {});
-
-// 码表条目数组 → { [code]: value }
-const toCodeTableMap = (list) =>
-  (Array.isArray(list) ? list : []).reduce((acc, item) => {
-    if (item?.code) acc[item.code] = item.value;
-    return acc;
-  }, {});
-
-export const HomeDataProvider = ({ children }) => {
-  const [modules, setModules] = useState({});
-  const [codeTable, setCodeTable] = useState({});
+export const HomeDataProvider = ({ children, initialData }) => {
+  const [modules, setModules] = useState(initialData?.modules ?? {});
+  const [codeTable, setCodeTable] = useState(initialData?.codeTable ?? {});
   // 已请求（含进行中）的模块 / 码表，用于去重：true 表示无需再发请求
-  const requestedModules = useRef({});
-  const codeTableRequested = useRef(false);
+  // SSR 已预取的部分一并标记，客户端不再重拉
+  const requestedModules = useRef(
+    Object.fromEntries(Object.keys(initialData?.modules ?? {}).map((k) => [k, true]))
+  );
+  const codeTableRequested = useRef(Boolean(initialData?.codeTable));
 
   // 按模块名懒加载：shark + image 并行，单个失败不阻塞，去重防止 StrictMode 双调用重复请求
   const ensureModule = useCallback((moduleName) => {
