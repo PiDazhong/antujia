@@ -7,6 +7,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  // 深色区块纵向相接时，分数像素高度的区块边界会在白色页面底色上
+  // 露出 1px 反锯齿缝隙（移动端必现）；上移 1px 让本节背景盖住上一节边界
+  margin-top: -1px;
   padding: $section-padding-y $section-padding-x;
   background-color: $color-bg-dark;
   color: $color-text-primary;

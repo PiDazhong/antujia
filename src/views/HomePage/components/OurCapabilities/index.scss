@@ -11,6 +11,9 @@ $item-gap-mobile: 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  // 深色区块纵向相接时，分数像素高度的区块边界会在白色页面底色上
+  // 露出 1px 反锯齿缝隙（移动端必现）；上移 1px 让本节背景盖住上一节边界
+  margin-top: -1px;
   background-color: $color-bg-dark; // 近黑底，与上下区块保持明暗节奏
   color: $color-text-primary;
   padding: 48px 24px 0 24px;

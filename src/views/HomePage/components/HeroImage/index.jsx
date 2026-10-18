@@ -42,7 +42,16 @@ const HeroImage = () => {
   return (
     <section className="hero-image">
       {/* 整版背景图（sort=1） */}
-      {bgSrc && <img className="hero-image__bg" src={bgSrc} alt="" aria-hidden="true" />}
+      {bgSrc && (
+        <img
+          className="hero-image__bg"
+          src={bgSrc}
+          alt=""
+          aria-hidden="true"
+          // LCP 大图：与 page.jsx 下发的 <link rel="preload"> 对应，浏览器优先调度
+          fetchPriority="high"
+        />
+      )}
 
       {/* 顶部主标题 */}
       <h1 className="hero-image__title">

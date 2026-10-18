@@ -7,6 +7,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  // 深色区块纵向相接时，分数像素高度的区块边界会在白色页面底色上
+  // 露出 1px 反锯齿缝隙（移动端必现）；上移 1px 让本节背景盖住上一节边界
+  margin-top: -1px;
   background-color: $color-bg-dark; // 近黑底，与上一深色区块连成一片
   color: $color-text-primary;
   padding: 48px 24px 0 24px;
@@ -72,6 +75,11 @@
     // 原图纯黑、区块底近黑，两者直接相接会有色差边界；
     // lighten 逐通道取较亮值：图比背景暗的像素透出背景色，纯黑处与底色融为一体
     mix-blend-mode: lighten;
+    // 三张团队照底部都自带一条浅灰「摄影棚地景带」（各图位置 76%~88% 不等），
+    // 以下又渐隐为纯黑；在近黑背景上这条灰带会显成一条悬空横线。
+    // 底部 mask 渐隐把 86% 以下整段融进背景（验证：70% 处开始淡出可盖住全部三张的亮带）
+    mask-image: linear-gradient(to bottom, #000 70%, transparent 86%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 86%);
   }
 
   // 图下灰色描述：水平居中，字号/粗细同 whatCanIDoForYou 的 __card-label

@@ -74,7 +74,7 @@
   }
 
   // antd 原生图标：svg 尺寸跟随字号（1em），用 font-size 控制大小
-  &__contact-icon {
+  &__contact-icon.anticon {
     flex-shrink: 0;
     font-size: $font-size-2xl;
     color: $color-gold;
