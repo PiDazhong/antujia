@@ -3,151 +3,19 @@ import { Client } from 'ssh2';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
-// 获取当前模块的文件路径
-const __filename = fileURLToPath(import.meta.url);
+import { execSync } from 'child_process';
 
 // 获取当前模块的目录路径
-const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// 打包产物构建
-const archiveBuild = (buildDir, outputPath) => {
-  return new Promise((resolve, reject) => {
-    // 删除本地现有的 d.zip 文件
-    if (fs.existsSync(outputPath)) {
-      fs.unlinkSync(outputPath);
-    }
-    const output = fs.createWriteStream(outputPath);
-    const archive = archiver('zip', {
-      zlib: { level: 9 },
-    });
-
-    output.on('close', () => {
-      // 获取压缩包文件大小
-      const fileSizeInBytes = archive.pointer();
-      const fileSizeInKB = fileSizeInBytes / 1024;
-      const fileSize = fileSizeInKB.toFixed(0) + ' KB';
-
-      // 输出压缩包大小信息
-      console.log(`打包完成，包大小: ${fileSize}`);
-      resolve();
-    });
-    output.on('error', (err) => reject(err));
-
-    archive.pipe(output);
-    archive.directory(buildDir, false);
-    archive.finalize();
-  });
-};
-
-// 上传并解压
-const uploadAndExtract = (
-  localPath,
-  remoteZipPath,
-  remoteDirPath,
-  sshConfig,
-  retries = 1
-) => {
-  return new Promise((resolve, reject) => {
-    const attemptUpload = (retryCount) => {
-      const conn = new Client();
-
-      conn
-        .on('ready', () => {
-          console.log('连接服务器成功，开始上传文件...');
-          conn.sftp((err, sftp) => {
-            if (err) {
-              console.error('SFTP 错误:', err);
-              return handleRetry(retryCount, err);
-            }
-
-            sftp.fastPut(localPath, remoteZipPath, {}, (err) => {
-              if (err) {
-                console.error('上传错误:', err);
-                return handleRetry(retryCount, err);
-              }
-
-              const execute = `
-                unzip -o ${remoteZipPath} -d ${remoteDirPath} &&
-                chmod -R 755 ${remoteDirPath} 
-              `;
-              console.log(`上传完成，开始执行解压任务命令: ${execute}  ...`);
-              conn.exec(execute, (err, stream) => {
-                if (err) {
-                  console.error('解压错误:', err);
-                  return handleRetry(retryCount, err);
-                }
-
-                stream
-                  .on('close', (code, sinal) => {
-                    console.log('解压完成，关闭连接...');
-                    conn.end();
-                    resolve();
-                  })
-                  .on('data', (data) => {
-                    // console.log('STDOUT', data.toString())
-                  })
-                  .stderr.on('data', (errData) => {
-                    // console.error('STDERR', errData.toString())
-                    reject(errData.toString());
-                  });
-              });
-
-              // 删除旧的目录
-              // const deleteCommand = `rm -rf ${remoteDirPath}`;
-              // console.log(`删除旧目录命令: ${deleteCommand}`);
-              // conn.exec(deleteCommand, (err, stream) => {
-              //   if (err) {
-              //     console.error('删除旧目录错误:', err);
-              //     return handleRetry(retryCount, err);
-              //   }
-              //   stream.on('close', (code, signal) => {
-              //     console.log('删除旧目录成功');
-
-              //   });
-              // });
-            });
-          });
-        })
-        .connect(sshConfig);
-
-      conn.on('error', (err) => {
-        // console.error('连接错误:', err);
-        handleRetry(retryCount, err);
-      });
-
-      conn.on('end', () => {
-        // console.log('连接结束');
-      });
-
-      conn.on('close', (hadError) => {
-        if (hadError) {
-          // console.error('连接关闭，发生错误');
-          handleRetry(retryCount, new Error('连接关闭'));
-        } else {
-          // console.log('连接关闭');
-        }
-      });
-    };
-
-    const handleRetry = (retryCount, err) => {
-      if (retryCount > 0) {
-        console.log(`重试中... (${retries - retryCount + 1}/${retries})`);
-        setTimeout(() => attemptUpload(retryCount - 1), 1000);
-      } else {
-        reject(new Error(`操作失败: ${err.message}`));
-      }
-    };
-
-    attemptUpload(retries);
-  });
-};
-
-// 配置参数
-const buildDir = path.join(__dirname, 'damonshome');
-const outputPath = path.join(__dirname, 'damonshome.zip');
-const remoteZipPath = '/etc/nginx/html/damonshome.zip';
-const remoteDirPath = '/etc/nginx/html/damonshome';
+/**
+ * Next.js standalone 部署脚本
+ * 前置：已执行 npm run build（产出 .next/standalone、.next/static）
+ * 流程：本地组装 standalone 完整包（补 static/public）→ 压缩 → 上传 →
+ *       服务器解压到 /opt/damons-home → 重启 node 进程 → 健康检查
+ */
+const REMOTE_DIR = '/etc/nginx/html/damons-home';
+const APP_PORT = '5173';
 
 const sshConfig = {
   host: '47.237.213.46',
@@ -156,27 +24,126 @@ const sshConfig = {
   password: 'Lmz123456@',
 };
 
-// 执行打包和上传解压流程
+const stageDir = path.join(__dirname, '.deploy', 'stage');
+const outputPath = path.join(__dirname, '.deploy', 'damons-home.zip');
+const remoteZipPath = '/tmp/damons-home.zip';
+
+// ---------- 本地：组装 standalone 完整包 ----------
+// standalone 产物缺少 .next/static 和 public，需手动补入（Next 官方要求）
+const prepareStage = () => {
+  const standaloneDir = path.join(__dirname, '.next', 'standalone');
+  if (!fs.existsSync(path.join(standaloneDir, 'server.js'))) {
+    throw new Error('未找到 .next/standalone/server.js，请先执行 npm run build');
+  }
+
+  fs.rmSync(path.join(__dirname, '.deploy'), { recursive: true, force: true });
+  fs.mkdirSync(stageDir, { recursive: true });
+
+  execSync(`cp -R "${standaloneDir}/." "${stageDir}/"`);
+  execSync(`mkdir -p "${path.join(stageDir, '.next')}"`);
+  execSync(`cp -R "${path.join(__dirname, '.next', 'static')}" "${path.join(stageDir, '.next', 'static')}"`);
+  if (fs.existsSync(path.join(__dirname, 'public'))) {
+    execSync(`cp -R "${path.join(__dirname, 'public')}" "${path.join(stageDir, 'public')}"`);
+  }
+  console.log('本地组装完成：standalone + static + public');
+};
+
+// ---------- 本地：打包 ----------
+const archiveBuild = () => {
+  return new Promise((resolve, reject) => {
+    const output = fs.createWriteStream(outputPath);
+    const archive = archiver('zip', { zlib: { level: 9 } });
+
+    output.on('close', () => {
+      console.log(`打包完成，包大小: ${(archive.pointer() / 1024 / 1024).toFixed(1)} MB`);
+      resolve();
+    });
+    output.on('error', reject);
+
+    archive.pipe(output);
+    archive.directory(stageDir, false);
+    archive.finalize();
+  });
+};
+
+// ---------- 远程：执行 shell 命令并回传输出 ----------
+const execRemote = (conn, command) => {
+  return new Promise((resolve, reject) => {
+    conn.exec(command, (err, stream) => {
+      if (err) return reject(err);
+      let stdout = '';
+      let stderr = '';
+      stream
+        .on('close', (code) => {
+          if (code === 0) resolve(stdout);
+          else reject(new Error(`远程命令失败 (exit ${code}): ${command}\n${stderr}`));
+        })
+        .on('data', (data) => (stdout += data.toString()))
+        .stderr.on('data', (data) => (stderr += data.toString()));
+    });
+  });
+};
+
+// ---------- 上传并部署 ----------
+const uploadAndDeploy = () => {
+  return new Promise((resolve, reject) => {
+    const conn = new Client();
+
+    conn
+      .on('ready', async () => {
+        try {
+          console.log('连接服务器成功，开始上传...');
+          await new Promise((res, rej) => {
+            conn.sftp((err, sftp) => {
+              if (err) return rej(err);
+              sftp.fastPut(outputPath, remoteZipPath, {}, (e) => (e ? rej(e) : res()));
+            });
+          });
+          console.log('上传完成，开始解压并重启...');
+
+          // 整目录替换（短暂停机，避免旧文件残留）
+          await execRemote(
+            conn,
+            `rm -rf ${REMOTE_DIR} && unzip -oq ${remoteZipPath} -d ${REMOTE_DIR} && chmod -R 755 ${REMOTE_DIR}`
+          );
+
+          // systemd 重启（unit 同时管理后端 damonshome-server 与 Next 前端）
+          // SSH 已是 root，无需 sudo
+          await execRemote(conn, `systemctl restart damons-home`);
+
+          // 健康检查：等待 3s 后请求首页，确认 SSR 服务已起来
+          const status = await execRemote(
+            conn,
+            `sleep 3 && curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:${APP_PORT}/`
+          );
+          console.log(`健康检查 http://127.0.0.1:${APP_PORT}/ → ${status.trim()}`);
+
+          await execRemote(conn, `rm -f ${remoteZipPath}`);
+          conn.end();
+          resolve();
+        } catch (e) {
+          conn.end();
+          reject(e);
+        }
+      })
+      .on('error', reject)
+      .connect(sshConfig);
+  });
+};
+
 const main = async () => {
   try {
-    console.log(
-      '--------------------------------------------------------------------------'
-    );
-    console.log('正在打包构建产物...');
-    await archiveBuild(buildDir, outputPath);
-    console.log('开始上传并解压...');
-    await uploadAndExtract(outputPath, remoteZipPath, remoteDirPath, sshConfig);
-    console.log('上传并解压任务完成!!!');
-    // 删除本地的 build.zip 文件
-    if (fs.existsSync(outputPath)) {
-      fs.unlinkSync(outputPath);
-    }
-    console.log(
-      '--------------------------------------------------------------------------'
-    );
+    console.log('--------------------------------------------------------------------------');
+    prepareStage();
+    await archiveBuild();
+    await uploadAndDeploy();
+    console.log('部署完成!!! 请确认 nginx 已配置反向代理到 127.0.0.1:' + APP_PORT);
+    console.log('--------------------------------------------------------------------------');
   } catch (error) {
-    console.error('操作失败:', error);
-    process.exit(1); // 停止构建过程
+    console.error('部署失败:', error.message);
+    process.exit(1);
+  } finally {
+    fs.rmSync(path.join(__dirname, '.deploy'), { recursive: true, force: true });
   }
 };
 

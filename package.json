@@ -7,8 +7,9 @@
     "dev": "next dev -p 5173",
     "build": "next build",
     "start": "next start -p 5173",
+    "deploy": "next build && node postbuild.js",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "commit": "npm run build && git add . && git commit -m 'feat: page开发' && git push origin master"
+    "commit": "npm run deploy && git add . && git commit -m 'feat: page开发' && git push origin master"
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.1",
